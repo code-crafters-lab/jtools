@@ -9,6 +9,8 @@ import java.lang.management.ManagementFactory;
 
 @Slf4j
 public class AgentUtil {
+    private static String processId;
+
     public static final String AGENT_PATH = "ccl.agent.path";
     public static final String AGENT_FILE = "ccl.agent.file";
 
@@ -17,8 +19,9 @@ public class AgentUtil {
      *
      * @return String
      */
-    public static String getProcessID() {
-        return ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+    public synchronized static String getProcessID() {
+        if (null == processId) processId = ManagementFactory.getRuntimeMXBean().getName().split("@", 2)[0];
+        return processId;
     }
 
     /**

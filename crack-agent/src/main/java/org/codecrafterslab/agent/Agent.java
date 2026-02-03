@@ -2,11 +2,14 @@ package org.codecrafterslab.agent;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,7 +22,12 @@ public class Agent {
                 "org.codecrafterslab.data.impl.DefaultDataGuard");
 
         DataGuardClassFileTransformer classFileTransformer = new DataGuardClassFileTransformer();
-
+        File file = new File("");
+        try {
+            inst.appendToBootstrapClassLoaderSearch(new JarFile(file));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         /* Agent_OnAttach */
         if (attach) {
             Set<Class<?>> classSet = null;
