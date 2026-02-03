@@ -1,4 +1,4 @@
-rootProject.name = "jvmti-tools"
+rootProject.name = "jtools"
 
 pluginManagement {
     repositories {
