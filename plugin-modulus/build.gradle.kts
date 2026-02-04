@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    id("ccl.lib")
 }
 
 group = "org.codecrafterslab"
@@ -10,8 +10,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly(project(":JAgent"))
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    compileOnly(project(":jagent"))
+
+    testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -23,7 +24,7 @@ tasks.test {
 tasks {
     withType<Jar> {
         manifest {
-            attributes["JANF-Plugin-Entry"] = "GrapeCityPlugin"
+            attributes["JANF-Plugin-Entry"] = "ModulusPlugin"
         }
     }
 }

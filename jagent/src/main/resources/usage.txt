@@ -1,0 +1,19 @@
+
+***************************************************
+*                  JCrack v2.0.0                  *
+*                                                 *
+*    The default licence file has two             *
+*    concurrent and has all the functions.        *
+*                                                 *
+*                                    2019/06/10   *
+***************************************************
+
+Usage:
+1. Copy the jar file to ${FR_HOME}/lib
+    or ${TOMCAT_HONE}/lib directory.
+2. Modify "${FR_HOME}/bin/designer.bat"
+    or "${TOMCAT_HONE}/bin/catalina.bat" file.
+        add "-javaagent:../lib/JCrack-X.X.X-RELEASE.jar"
+        in front of "com.fr.start.Designer",for the tomcat
+        service settings, please see README.MD file.
+3. Run ${FR_HOME}/bin/designer.bat or ${TOMCAT_HONE}/bin/startup.bat.

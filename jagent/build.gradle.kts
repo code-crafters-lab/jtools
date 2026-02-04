@@ -13,16 +13,24 @@ repositories {
     mavenCentral()
 }
 
+var java8: String? = System.getenv("JAVA8_HOME")
+if (java8 == null) {
+    java8 = "/Users/wuyujie/Library/Java/JavaVirtualMachines/corretto-1.8.0_482/Contents/Home/bin"
+}
+
 dependencies {
-    api("org.ow2.asm:asm-commons:9.9.1")
-//    implementation("org.ow2.asm:asm-util:9.9.1")
+    api(libs.slf4j.api)
+    api(libs.asm.commons)
+    implementation(libs.asm.util)
 
-    compileOnly(files("/Users/wuyujie/Library/Java/JavaVirtualMachines/corretto-1.8.0_482/Contents/Home/lib/tools.jar"))
+    compileOnly(files("${java8}/../lib/tools.jar"))
 
-    testImplementation("org.ow2.asm:asm-test:9.9.1")
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(libs.asm.test)
 
+    annotationProcessor(libs.lombok)
 }
 
 tasks.test {
@@ -36,9 +44,9 @@ val manifestAttr = mapOf(
     "Built-Date" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss.SSS")),
     "Built-Jdk" to System.getProperty("java.version"),
     "Built-Gradle" to gradle.gradleVersion,
-    "Agent-class" to "com.janetfilter.core.Launcher",
-    "Premain-Class" to "com.janetfilter.core.Launcher",
-    "Main-class" to "com.janetfilter.core.Launcher",
+    "Agent-class" to "org.codecrafterslab.agent.Launcher",
+    "Premain-Class" to "org.codecrafterslab.agent.Launcher",
+    "Main-class" to "org.codecrafterslab.agent.Usage",
     "Can-Redefine-Classes" to true,
     "Can-Retransform-Classes" to true,
     "Can-Set-Native-Method-Prefix" to true

@@ -1,0 +1,21 @@
+[versions]
+slf4j-api = "2.0.17"
+asm = "9.9.1"
+junit-bom = "5.10.0"
+lombok = "1.18.42"
+
+
+[libraries]
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j-api" }
+asm-commons = { group = "org.ow2.asm", name = "asm-commons", version.ref = "asm" }
+asm-util = { group = "org.ow2.asm", name = "asm-util", version.ref = "asm" }
+asm-test = { group = "org.ow2.asm", name = "asm-test", version.ref = "asm" }
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit-bom" }
+lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
+
+[bundles]
+asm = ["asm-commons", "asm-util"]
+
+[plugins]
+
+
