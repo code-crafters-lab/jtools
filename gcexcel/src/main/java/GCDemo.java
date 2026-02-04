@@ -17,6 +17,8 @@ import java.math.BigDecimal;
 public class GCDemo {
 
     public static void main(String[] args) {
+        String programData = System.getenv("ProgramData");
+        log.warn("ProgramData: {}", programData);
         Workbook workbook = new Workbook();
         workbook.open("demo_tpl.xlsx");
         Test test = new Test();

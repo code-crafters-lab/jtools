@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.security.*;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
@@ -39,8 +39,8 @@ class LicenseMangeTest {
         log.debug("result: {}", result);
 
         String license = LicenseMange.GetLicense();
-        license = "NmJmNjMwZWEtMjJkMy00N2I1LWJiOWUtMjEwMmYzYzUyMTg2,NjA2NDExMDdYWFhYWFhYWDA4Mg,bWFjLW1pbmk,RmFsc2U," +
-                "OTUyNQ,VHJ1ZQ,OTUzMg,OTUzMg,U3RhbmRhcmQ,,;A7eiXxLGFFM7lGGp+ZPmbntKx/ViM6i1JefDezLXqKzYp39Lc8p7GUe8nDSqv3mmq2TedSW5Fxk7WX3sQzfBgVnzt/pMKod1yTZ7StaS6qD7ytS/zpIrMxMjafnrtjVG4M7ZVpIiSzmLUAxOAMrG9R79ZXLi6ZalDK0PQQe9nOc";
+//        license = "NmJmNjMwZWEtMjJkMy00N2I1LWJiOWUtMjEwMmYzYzUyMTg2,NjA2NDExMDdYWFhYWFhYWDA4Mg,bWFjLW1pbmk,RmFsc2U," +
+//                "OTUyNQ,VHJ1ZQ,OTUzMg,OTUzMg,U3RhbmRhcmQ,,;A7eiXxLGFFM7lGGp+ZPmbntKx/ViM6i1JefDezLXqKzYp39Lc8p7GUe8nDSqv3mmq2TedSW5Fxk7WX3sQzfBgVnzt/pMKod1yTZ7StaS6qD7ytS/zpIrMxMjafnrtjVG4M7ZVpIiSzmLUAxOAMrG9R79ZXLi6ZalDK0PQQe9nOc";
         Object parse = LicenseMange.parse(license);
         log.warn("parse: {}", parse);
     }
