@@ -16,9 +16,8 @@ import java.math.BigDecimal;
 @Slf4j
 public class GCDemo {
 
-    public static void main(String[] args) {
-        String programData = System.getenv("ProgramData");
-        log.warn("ProgramData: {}", programData);
+    public static void main(String[] args) throws InterruptedException {
+
         Workbook workbook = new Workbook();
         workbook.open("demo_tpl.xlsx");
         Test test = new Test();
@@ -29,8 +28,11 @@ public class GCDemo {
         JsonDS data = new JsonDS(test);
 
         workbook.addDataSource("a", test.a);
+        // b,c 无法正常填充
         workbook.addDataSource("b", test.b);
         workbook.addDataSource("c", test.c);
+
+        // 使用自定义数据源后，可以使用了
         workbook.addDataSource("ds", data);
         workbook.processTemplate();
         workbook.save("demo.xlsx");
@@ -73,7 +75,7 @@ public class GCDemo {
 
         @Override
         public Object a(boolean b) {
-            // 这个参数的意义应该是：是否安装基本数据类型将数据递归展开
+            // 这个参数的意义应该是：是否按照基本数据类型将数据递归展开
             if (b) {
                 return bR.a(jsonElement);
             }

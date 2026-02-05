@@ -21,6 +21,7 @@ if (java8 == null) {
 dependencies {
     api(libs.slf4j.api)
     api(libs.asm.commons)
+    implementation("ch.qos.logback:logback-classic:1.5.27")
     implementation(libs.asm.util)
 
     compileOnly(files("${java8}/../lib/tools.jar"))

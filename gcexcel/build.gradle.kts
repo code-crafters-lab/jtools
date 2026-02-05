@@ -37,6 +37,6 @@ application {
     mainClass.set("GCDemo")
     val args = mutableListOf("-Dfile.encoding=UTF-8")
     args.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005")
-    args.add("-javaagent:/Users/wuyujie/Project/opensource/jtools/jagent/build/libs/JAgent-1.0.0.jar")
+    args.add("-javaagent:/Users/wuyujie/Project/opensource/jtools/jagent-distribution/build/dist/JAgent-1.0.0.jar")
     applicationDefaultJvmArgs = args
 }

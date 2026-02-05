@@ -4,8 +4,6 @@ import com.janetfilter.core.attach.VMLauncher;
 import com.janetfilter.core.attach.VMSelector;
 import com.janetfilter.core.commons.DebugInfo;
 import com.janetfilter.core.utils.WhereIsUtils;
-import lombok.Data;
-import org.codecrafterslab.agent.core.Environment;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;

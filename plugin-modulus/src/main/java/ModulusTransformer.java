@@ -1,3 +1,4 @@
+import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.core.Transformer;
 import org.objectweb.asm.*;
 
@@ -5,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+@Slf4j
 public class ModulusTransformer implements Transformer {
     // 原始待替换的两个字符串（复制自目标类）
     private static final String ORIGINAL_STR1 = "tgoYDy+InG+V+F4gU9ssbjuTHXzHaXwFzyF+SA85fe4AeN1N5jzxA2MzXT8VsArKZ9Ugz2rYPp9kOhpwiSq2QSfxE+axl8403O9JkcB9826e7Co3WjZYOMbfKWLrRJFTWatkEIRJvP2ocOEtYCLDOaET08OCAnSFAcO7fReSd00=";

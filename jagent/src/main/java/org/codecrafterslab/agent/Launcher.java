@@ -57,14 +57,14 @@ public class Launcher {
         try {
             AgentUtil.getAgentJarFile().ifPresent(file -> {
                 loaded = true;
-                Environment environment = new Environment(inst, file, "", attach);
                 JarFile jarFile;
                 try {
                     jarFile = new JarFile(file);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                inst.appendToBootstrapClassLoaderSearch(jarFile);
+                inst.appendToSystemClassLoaderSearch(jarFile);
+                Environment environment = new Environment(inst, file, agentArgs, attach);
                 AgentUtil.init(environment);
             });
         } catch (Exception e) {

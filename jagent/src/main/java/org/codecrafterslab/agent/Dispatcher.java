@@ -2,11 +2,11 @@ package org.codecrafterslab.agent;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.codecrafterslab.agent.api.AgentDispatcher;
 import org.codecrafterslab.agent.core.Environment;
 import org.codecrafterslab.agent.core.Transformer;
 
 import java.io.File;
-import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Slf4j
-public class Dispatcher implements ClassFileTransformer {
+public class Dispatcher implements AgentDispatcher<Transformer> {
     private static final String DEFAULT_CLASS_OUT_DIR = System.getProperty("user.home") + File.separator + "code";
     private static final String CLASS_OUT_DIR = System.getProperty("class.out.dir", "");
     private static final String CLASS_INCLUDE_PATTERN = System.getProperty("class.pattern", "");
@@ -61,7 +61,7 @@ public class Dispatcher implements ClassFileTransformer {
             for (Transformer transformer : transformers) {
                 result = transformer.transform(loader, className, classBeingRedefined, protectionDomain, result, order++);
             }
-            return classfileBuffer;
+            return result;
         }
         return null;
     }
@@ -82,26 +82,12 @@ public class Dispatcher implements ClassFileTransformer {
         }
 
         synchronized (this) {
-            String className = transformer.getHookClassName();
-            if (null == className) {
-//                globalTransformers.add(transformer);
-//                if (transformer.isManager()) {
-//                    manageTransformers.add(transformer);
-//                }
-                return;
-            }
-
-            hookClassNames.add(transformer.getCanonicalName());
-            List<Transformer> transformers = transformersMap.computeIfAbsent(className, k -> new ArrayList<>());
-            transformers.add(transformer);
+            Optional.ofNullable(transformer.getHookClassName()).ifPresent(className -> {
+                hookClassNames.add(transformer.getCanonicalName());
+                List<Transformer> transformers = transformersMap.computeIfAbsent(className, k -> new ArrayList<>());
+                transformers.add(transformer);
+            });
         }
 
-    }
-
-    public void addTransformers(Collection<Transformer> transformers) {
-        if (null == transformers) return;
-        for (Transformer transformer : transformers) {
-            addTransformer(transformer);
-        }
     }
 }

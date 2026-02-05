@@ -37,17 +37,17 @@ public class AgentUtil {
     public static void init(Environment environment) {
         Dispatcher dispatcherAgent = new Dispatcher(environment);
         new PluginManager(dispatcherAgent, environment).loadPlugins();
+
         Instrumentation inst = environment.getInstrumentation();
 
-        /* Agent_OnAttach */
+        /* 1. 注册类文件转换器 */
+        boolean retransformClassesSupported = inst.isRetransformClassesSupported();
+        inst.addTransformer(dispatcherAgent, retransformClassesSupported);
+
         if (environment.isAttachMode()) {
-            Set<Class<?>> classSet = new HashSet<>();
-
-            /* 1. 注册类文件转换器 */
-            inst.addTransformer(dispatcherAgent, inst.isRetransformClassesSupported());
-
             /* 2. 获取需要重新转换的类 */
-            if (inst.isRetransformClassesSupported()) {
+            Set<Class<?>> classSet = new HashSet<>();
+            if (retransformClassesSupported) {
                 Set<String> classNames = dispatcherAgent.getHookClassNames();
                 Set<Pattern> includeClassNamePatterns = dispatcherAgent.getIncludeClassNamePattern();
                 Set<Pattern> excludeClassNamePatterns = dispatcherAgent.getExcludeClassNamePattern();
@@ -67,11 +67,11 @@ public class AgentUtil {
             }
 
             /* 3. 重新转换类 */
-            if (inst.isRetransformClassesSupported() && !classSet.isEmpty()) {
+            if (retransformClassesSupported && !classSet.isEmpty()) {
                 Class<?>[] classes = classSet.toArray(new Class<?>[0]);
-                if (log.isDebugEnabled()) {
+                if (log.isInfoEnabled()) {
                     List<String> names = classSet.stream().map(Class::getCanonicalName).collect(Collectors.toList());
-                    log.debug("agent loaded and will transformer class : {}", names);
+                    log.info("agent loaded and will transformer class : {}", names);
                 }
                 try {
                     /* 其中任何一个类不能转换将会抛出 UnmodifiableClassException 异常 */
@@ -81,13 +81,8 @@ public class AgentUtil {
                 }
             }
         }
-        /* Agent_OnLoad */
-        else {
-            /* 1. 注册类文件转换器 */
-            inst.addTransformer(dispatcherAgent);
-        }
 
-        /* 设置代理所需的本机方法前缀 */
+        /* 4. 设置代理所需的本机方法前缀 */
         if (inst.isNativeMethodPrefixSupported()) {
             inst.setNativeMethodPrefix(dispatcherAgent, environment.getNativePrefix());
         }

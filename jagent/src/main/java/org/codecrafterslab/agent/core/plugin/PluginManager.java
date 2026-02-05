@@ -87,7 +87,7 @@ public final class PluginManager {
                 }
 
                 synchronized (inst) {
-                    inst.appendToBootstrapClassLoaderSearch(jarFile);
+                    inst.appendToSystemClassLoaderSearch(jarFile);
                 }
 
                 PluginEntry pluginEntry = (PluginEntry) Class.forName(entryClass).newInstance();
