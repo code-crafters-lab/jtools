@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.17")
-    implementation("ch.qos.logback:logback-classic:1.5.18")
+    implementation("ch.qos.logback:logback-classic:1.5.27")
     implementation("com.grapecitysoft.documents:gcexcel:9.0.1")
     implementation("com.google.code.gson:gson:2.12.1")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
@@ -32,11 +32,43 @@ tasks {
     }
 }
 
+val agent: String =
+    project(":distribution").layout.buildDirectory.file("dist/JAgent-1.0.0.jar").get().asFile.absolutePath
+
 /* java agent */
 application {
     mainClass.set("GCDemo")
     val args = mutableListOf("-Dfile.encoding=UTF-8")
     args.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005")
-    args.add("-javaagent:/Users/wuyujie/Project/opensource/jtools/jagent-distribution/build/dist/JAgent-1.0.0.jar")
+    args.add("-javaagent:${agent}")
     applicationDefaultJvmArgs = args
+}
+
+tasks {
+    register<JavaExec>("gcexcel") {
+        dependsOn(":distribution:dist")
+        group = "demo"
+        mainClass.set("GCDemo")
+        classpath = sourceSets.main.get().runtimeClasspath
+
+        jvmArgs = listOf(
+            "-Dfile.encoding=UTF-8",
+            "-javaagent:${agent}",
+            "-Dclass.out.dir=${project.layout.buildDirectory.file("code").get().asFile.absolutePath}"
+        )
+    }
+
+    register<JavaExec>("gcexcel-debug") {
+        dependsOn(":distribution:dist")
+        group = "demo"
+        mainClass.set("GCDemo")
+        classpath = sourceSets.main.get().runtimeClasspath
+
+        jvmArgs = listOf(
+            "-Dfile.encoding=UTF-8",
+            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005",
+            "-javaagent:${agent}",
+            "-Dclass.out.dir=${project.layout.buildDirectory.file("code").get().asFile.absolutePath}"
+        )
+    }
 }

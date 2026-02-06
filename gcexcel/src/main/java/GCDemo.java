@@ -1,7 +1,4 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.TypeAdapter;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.grapecity.documents.excel.Workbook;
@@ -25,7 +22,23 @@ public class GCDemo {
         test.setB(new BigDecimal("1235.5678"));
         test.setC(Test.H.C);
 
-        JsonDS data = new JsonDS(test);
+        // 注册自定义序列化器,序列为基本数据类型
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Test.H.class, new TypeAdapter<Test.H>() {
+                    @Override
+                    public void write(JsonWriter writer, Test.H h) throws IOException {
+                        writer.value(h.name().toLowerCase() + "_001");
+                    }
+
+                    @Override
+                    public Test.H read(JsonReader reader) throws IOException {
+                        String s = reader.nextString();
+                        return Test.H.valueOf(s.toUpperCase());
+                    }
+                })
+                .create();
+
+        JsonDS data = new JsonDS(test, gson);
 
         workbook.addDataSource("a", test.a);
         // b,c 无法正常填充
@@ -54,22 +67,7 @@ public class GCDemo {
     static class JsonDS implements l {
         private final JsonElement jsonElement;
 
-        public JsonDS(Object data) {
-            // 注册自定义序列化器
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(Test.H.class, new TypeAdapter<Test.H>() {
-                        @Override
-                        public void write(JsonWriter writer, Test.H h) throws IOException {
-                            writer.value(h.name().toLowerCase() + "_001");
-                        }
-
-                        @Override
-                        public Test.H read(JsonReader reader) throws IOException {
-                            String s = reader.nextString();
-                            return Test.H.valueOf(s);
-                        }
-                    })
-                    .create();
+        public JsonDS(Object data, Gson gson) {
             jsonElement = gson.toJsonTree(data);
         }
 

@@ -7,7 +7,12 @@ import org.codecrafterslab.agent.core.Environment;
 import org.codecrafterslab.agent.core.Transformer;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.instrument.IllegalClassFormatException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.ProtectionDomain;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -18,7 +23,7 @@ import java.util.stream.Collectors;
 public class Dispatcher implements AgentDispatcher<Transformer> {
     private static final String DEFAULT_CLASS_OUT_DIR = System.getProperty("user.home") + File.separator + "code";
     private static final String CLASS_OUT_DIR = System.getProperty("class.out.dir", "");
-    private static final String CLASS_INCLUDE_PATTERN = System.getProperty("class.pattern", "");
+    private static final String CLASS_INCLUDE_PATTERN = System.getProperty("class.pattern.include", "");
     private static final String CLASS_EXCLUDE_PATTERN = System.getProperty("class.pattern.exclude", "");
     private static final String CLASS_SUFFIX = ".class";
 
@@ -61,9 +66,30 @@ public class Dispatcher implements AgentDispatcher<Transformer> {
             for (Transformer transformer : transformers) {
                 result = transformer.transform(loader, className, classBeingRedefined, protectionDomain, result, order++);
             }
+
+            // 输出 class 文件
+            String dir = "".equals(CLASS_OUT_DIR) ? DEFAULT_CLASS_OUT_DIR : CLASS_OUT_DIR;
+            this.exportClazzToFile(dir, className, CLASS_SUFFIX, result);
+
             return result;
         }
         return null;
+    }
+
+    public void exportClazzToFile(String dir, String fileName, String suffix, byte[] data) {
+        if (data == null || data.length == 0) return;
+        Path path = Paths.get(dir, fileName + suffix);
+        if (log.isDebugEnabled()) {
+            log.debug("class output to: {}", path);
+        }
+        try {
+            Files.createDirectories(path.getParent());
+            Files.write(path, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            if (log.isErrorEnabled()) {
+                log.error("Failed to write class {} file to disk", fileName, e);
+            }
+        }
     }
 
     public void addTransformer(Transformer transformer) {

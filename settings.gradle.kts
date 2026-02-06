@@ -25,11 +25,10 @@ plugins {
 }
 
 include("data-guard")
-include("crack-agent")
 include("demo")
 //include("other")
 include("gcexcel")
 
 include("jagent")
 include("plugin-modulus")
-include("jagent-distribution")
+include("distribution")

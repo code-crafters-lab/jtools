@@ -13,4 +13,8 @@ public interface AgentDispatcher<T> extends ClassFileTransformer {
             addTransformer(transformer);
         }
     }
+
+    default void exportClazzToFile(String dir, String className, String suffix, byte[] data) {
+
+    }
 }

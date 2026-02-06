@@ -18,7 +18,6 @@ dependencies {
     } else {
         implementation(project(":data-guard"))
     }
-    runtimeOnly(project(":crack-agent"))
     implementation("org.slf4j:slf4j-api:2.0.17")
     implementation("ch.qos.logback:logback-classic:1.5.18")
     implementation("com.beust:jcommander:1.82")
@@ -43,7 +42,7 @@ enum class AgentType { JAVA, NATIVE }
 
 var agentType = AgentType.JAVA
 /* java agent */
-val agentJar = project(":crack-agent").tasks.jar.get().outputs.files.singleFile
+//val agentJar = project(":crack-agent").tasks.jar.get().outputs.files.singleFile
 /* native agent */
 val agentPath = "${javaLibraryPath}/agent.dll"
 
@@ -51,9 +50,9 @@ application {
     mainClass.set("org.codecrafterslab.App")
     val args = mutableListOf("-Dfile.encoding=UTF-8")
 
-    if (agentJar.exists() && agentType == AgentType.JAVA) {
-        args.add("-javaagent:${agentJar.absolutePath}")
-    }
+//    if (agentJar.exists() && agentType == AgentType.JAVA) {
+//        args.add("-javaagent:${agentJar.absolutePath}")
+//    }
 
     if (agentPath.isNotEmpty() && agentType == AgentType.NATIVE) {
         args.add("-agentpath:${agentPath}")
