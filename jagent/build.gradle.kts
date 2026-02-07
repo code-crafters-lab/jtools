@@ -20,9 +20,13 @@ if (java8 == null) {
 
 dependencies {
     api(libs.slf4j.api)
-    api(libs.asm.commons)
-//    implementation("ch.qos.logback:logback-classic:1.5.27")
-    implementation(libs.asm.util)
+    api(libs.asm.commons) {
+        exclude(group = "org.ow2.asm", module = "asm-tree")
+    }
+    api(libs.toml4j) {
+        exclude(group = "com.google.code.gson")
+    }
+//    implementation(libs.asm.util)
 
     compileOnly(files("${java8}/../lib/tools.jar"))
 

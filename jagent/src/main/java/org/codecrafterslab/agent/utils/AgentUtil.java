@@ -2,15 +2,22 @@ package org.codecrafterslab.agent.utils;
 
 import com.sun.tools.attach.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
-import org.codecrafterslab.agent.Dispatcher;
+import org.codecrafterslab.agent.Agent;
+import org.codecrafterslab.agent.api.AppContext;
+import org.codecrafterslab.agent.core.DefaultAppContext;
 import org.codecrafterslab.agent.core.Environment;
 import org.codecrafterslab.agent.core.plugin.PluginManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.lang.management.ManagementFactory;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.util.*;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -73,7 +80,7 @@ public class AgentUtil {
 
             // 4. 加载 Agent
             // 4.1 方式一： 加载 java agent
-            vm.loadAgent(agentPath,null);
+            vm.loadAgent(agentPath, null);
 
             // 4.2 方式二： 加载 native agent
             // vm.loadAgentPath(agentPath, null);
@@ -103,22 +110,24 @@ public class AgentUtil {
     }
 
     public static void init(Environment environment) {
-        Dispatcher dispatcherAgent = new Dispatcher(environment);
-        new PluginManager(dispatcherAgent, environment).loadPlugins();
+        Agent agent = new Agent(environment);
+        AppContext appContext = new DefaultAppContext(environment.getAgentFile());
+        PluginManager.loadPlugins(agent, appContext);
+//        new PluginManager(agent, environment).loadPlugins();
 
         Instrumentation inst = environment.getInstrumentation();
 
         /* 1. 注册类文件转换器 */
         boolean retransformClassesSupported = inst.isRetransformClassesSupported();
-        inst.addTransformer(dispatcherAgent, retransformClassesSupported);
+        inst.addTransformer(agent, retransformClassesSupported);
 
         if (environment.isAttachMode()) {
             /* 2. 获取需要重新转换的类 */
             Set<Class<?>> classSet = new HashSet<>();
             if (retransformClassesSupported) {
-                Set<String> classNames = dispatcherAgent.getHookClassNames();
-                Set<Pattern> includeClassNamePatterns = dispatcherAgent.getIncludeClassNamePattern();
-                Set<Pattern> excludeClassNamePatterns = dispatcherAgent.getExcludeClassNamePattern();
+                Set<String> classNames = agent.getClassNames();
+                Set<Pattern> includeClassNamePatterns = agent.getIncludeClassNamePattern();
+                Set<Pattern> excludeClassNamePatterns = agent.getExcludeClassNamePattern();
 
                 classSet = Arrays.stream((Class<?>[]) inst.getAllLoadedClasses())
                         .filter(clazz -> clazz.getCanonicalName() != null && !clazz.getCanonicalName().isEmpty())
@@ -152,8 +161,41 @@ public class AgentUtil {
 
         /* 4. 设置代理所需的本机方法前缀 */
         if (inst.isNativeMethodPrefixSupported()) {
-            inst.setNativeMethodPrefix(dispatcherAgent, environment.getNativePrefix());
+            inst.setNativeMethodPrefix(agent, environment.getNativePrefix());
         }
 
+    }
+
+    public static Manifest getManifest(Class<?> clazz) {
+        String className = clazz.getName().replace('.', '/') + ".class";
+        URL classUrl = clazz.getClassLoader().getResource(className);
+        if (classUrl == null) {
+            return null; // 类资源不存在，返回空
+        }
+
+        // 2. 仅处理 Jar 包中的类（非 Jar 包场景直接返回空）
+        if (!"jar".equals(classUrl.getProtocol())) {
+            return null;
+        }
+
+        JarURLConnection jarConn = null;
+        try {
+            // 3. 打开 Jar 连接并读取 MANIFEST.MF
+            jarConn = (JarURLConnection) classUrl.openConnection();
+            // MANIFEST 文件不存在，返回空
+            return jarConn.getManifest();
+        } catch (IOException e) {
+            // 捕获 IO 异常（如 Jar 包损坏、MANIFEST 读取失败），返回空
+            return null;
+        } finally {
+            // 5. 关闭连接，避免资源泄漏
+            if (jarConn != null) {
+                try {
+                    jarConn.getInputStream().close();
+                } catch (IOException e) {
+                    // 关闭流异常不影响主逻辑，静默处理
+                }
+            }
+        }
     }
 }

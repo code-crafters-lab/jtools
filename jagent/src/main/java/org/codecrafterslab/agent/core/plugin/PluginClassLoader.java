@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+@Deprecated
 public final class PluginClassLoader extends ClassLoader {
     private final JarFile jarFile;
 

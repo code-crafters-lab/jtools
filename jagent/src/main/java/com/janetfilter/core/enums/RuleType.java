@@ -1,7 +1,9 @@
 package com.janetfilter.core.enums;
 
 import com.janetfilter.core.rulers.*;
+import lombok.Getter;
 
+@Getter
 public enum RuleType {
     PREFIX(new PrefixRuler()),
     PREFIX_IC(new PrefixICRuler()),
@@ -15,11 +17,8 @@ public enum RuleType {
 
     private final Ruler ruler;
 
-    RuleType(Ruler ruler) { // Lazy here. No lazy loading
+    RuleType(Ruler ruler) {
         this.ruler = ruler;
     }
 
-    public Ruler getRuler() {
-        return ruler;
-    }
 }

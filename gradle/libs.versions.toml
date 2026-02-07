@@ -3,7 +3,8 @@ slf4j-api = "2.0.17"
 asm = "9.9.1"
 junit-bom = "5.10.0"
 lombok = "1.18.42"
-
+google-auto-service = "1.1.1"
+toml4j = "0.7.3"
 
 [libraries]
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j-api" }
@@ -12,6 +13,8 @@ asm-util = { group = "org.ow2.asm", name = "asm-util", version.ref = "asm" }
 asm-test = { group = "org.ow2.asm", name = "asm-test", version.ref = "asm" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit-bom" }
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
+google-auto-service = { group = "com.google.auto.service", name = "auto-service", version.ref = "google-auto-service" }
+toml4j = { group = "io.hotmoka", name = "toml4j", version.ref = "toml4j" }
 
 [bundles]
 asm = ["asm-commons", "asm-util"]

@@ -1,10 +1,13 @@
 package org.codecrafterslab.agent.core.asm.visitor;
 
+import org.codecrafterslab.agent.api.IMethodSupport;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 /**
  * @author Wu Yujie
@@ -19,7 +22,7 @@ public abstract class BaseClassVisitor extends ClassVisitor implements Opcodes {
     }
 
     public BaseClassVisitor(ClassVisitor classVisitor) {
-        this(ASM5, classVisitor);
+        this(ASM9, classVisitor);
     }
 
     @Override
@@ -28,7 +31,7 @@ public abstract class BaseClassVisitor extends ClassVisitor implements Opcodes {
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
 
         /* 修改方法, 删除则返回 null */
-        if (this.isMethodModifySupport(access, name, desc, signature, exceptions)) {
+        if (this.getMethodSupport().orElse(IMethodSupport.DEFAULT).accept(access, name, desc, signature, exceptions)) {
             /* 在原始方法上修改 */
             if (log.isDebugEnabled()) {
                 log.debug("Find method : {} {} {}", access, name, desc);
@@ -44,17 +47,7 @@ public abstract class BaseClassVisitor extends ClassVisitor implements Opcodes {
         return mv;
     }
 
-    /**
-     * 指定方法是否支持修改
-     *
-     * @param access     修饰符
-     * @param name       名称
-     * @param desc       描述
-     * @param signature  签名
-     * @param exceptions 异常
-     * @return boolean
-     */
-    protected abstract boolean isMethodModifySupport(int access, String name, String desc, String signature, String[] exceptions);
+    protected abstract Optional<IMethodSupport> getMethodSupport();
 
     /**
      * 修改方法

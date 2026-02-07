@@ -30,5 +30,6 @@ include("demo")
 include("gcexcel")
 
 include("jagent")
-include("plugin-modulus")
 include("distribution")
+include("plugin-cs")
+include("plugin-timing")

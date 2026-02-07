@@ -2,8 +2,9 @@ plugins {
     id("ccl.lib")
 }
 
-group = "org.codecrafterslab"
+group = "org.codecrafterslab.agent"
 version = "0.1.0"
+description = "A Method Time Consumption Statistics Plugin for JAgent."
 
 repositories {
     mavenCentral()
@@ -17,6 +18,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     annotationProcessor(libs.lombok)
+    annotationProcessor(libs.google.auto.service)
 }
 
 tasks.test {
@@ -26,7 +28,10 @@ tasks.test {
 tasks {
     withType<Jar> {
         manifest {
-            attributes["JANF-Plugin-Entry"] = "ModulusPlugin"
+            attributes["Plugin-Name"] = project.name
+            attributes["Plugin-Author"] = "coffee377"
+            attributes["Plugin-Version"] = project.version
+            attributes["Plugin-Description"] = project.description
         }
     }
 }

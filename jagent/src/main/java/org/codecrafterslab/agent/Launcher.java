@@ -1,6 +1,5 @@
 package org.codecrafterslab.agent;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.core.Environment;
 import org.codecrafterslab.agent.utils.AgentUtil;
@@ -63,7 +62,7 @@ public class Launcher {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                inst.appendToSystemClassLoaderSearch(jarFile);
+//                inst.appendToSystemClassLoaderSearch(jarFile);
                 Environment environment = new Environment(inst, file, agentArgs, attach);
                 AgentUtil.init(environment);
             });

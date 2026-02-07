@@ -1,11 +1,14 @@
 package org.codecrafterslab.agent.core.plugin;
 
+import org.codecrafterslab.agent.api.AppContext;
+import org.codecrafterslab.agent.api.Plugin;
 import org.codecrafterslab.agent.core.Environment;
-import org.codecrafterslab.agent.core.Transformer;
+import org.codecrafterslab.agent.api.ITransformer;
 
 import java.util.List;
 
-public interface PluginEntry {
+@Deprecated
+public interface PluginEntry extends Plugin {
     default void init(Environment environment, PluginConfig config) {
     }
 
@@ -21,5 +24,6 @@ public interface PluginEntry {
         return "A JAgent plugin.";
     }
 
-    List<Transformer> getTransformers();
+    List<ITransformer> getTransformers();
+
 }

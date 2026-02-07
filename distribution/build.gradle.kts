@@ -11,14 +11,14 @@ repositories {
 
 dependencies {
     implementation(project(":jagent"))
-    implementation(project(":plugin-modulus"))
+    implementation(project(":plugin-cs"))
+    implementation(project(":plugin-timing"))
 }
-
 
 tasks {
     register<Copy>("dist") {
         group = "distribution"
-        dependsOn(clean, "entry", "plugin-modulus")
+        dependsOn(clean, "entry", "plugin-cs", "plugin-timing")
     }
 
     register<Copy>("entry") {
@@ -36,12 +36,22 @@ tasks {
 
     }
 
-    register<Copy>("plugin-modulus") {
+    register<Copy>("plugin-cs") {
         group = "distribution"
-        dependsOn(":plugin-modulus:build")
+        dependsOn(":plugin-cs:build")
 
         // 插件
-        val pluginProject = project(":plugin-modulus")
+        val pluginProject = project(":plugin-cs")
+        from(pluginProject.layout.buildDirectory.file("libs"))
+        into(project.layout.buildDirectory.dir("dist/plugins"))
+    }
+
+    register<Copy>("plugin-timing") {
+        group = "distribution"
+        dependsOn(":plugin-timing:build")
+
+        // 插件
+        val pluginProject = project(":plugin-timing")
         from(pluginProject.layout.buildDirectory.file("libs"))
         into(project.layout.buildDirectory.dir("dist/plugins"))
     }
