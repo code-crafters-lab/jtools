@@ -1,9 +1,10 @@
 package org.codecrafterslab.agent.plugin.cs;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.codecrafterslab.agent.api.IMethodSupport;
 
-import java.util.Map;
+import java.util.List;
 
 @Data
 public class ConstSubstitutionRule<T> {
@@ -12,11 +13,18 @@ public class ConstSubstitutionRule<T> {
      */
     private String className;
     /**
-     * 支持修改的方法
+     * 支持修改的方法信息
      */
-    private IMethodSupport methodSupport;
+    private IMethodSupport.MethodInfo methodInfo;
     /**
      * 常量替换 KV
      */
-    private Map<T, T> constantMap;
+    private List<Replacer<T>> replacers;
+
+    @Data
+    @AllArgsConstructor
+    static class Replacer<T> {
+        private T src;
+        private T dst;
+    }
 }

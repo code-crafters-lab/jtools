@@ -24,7 +24,7 @@ dependencies {
         exclude(group = "org.ow2.asm", module = "asm-tree")
     }
     api(libs.toml4j) {
-        exclude(group = "com.google.code.gson")
+//        exclude(group = "com.google.code.gson")
     }
 //    implementation(libs.asm.util)
 

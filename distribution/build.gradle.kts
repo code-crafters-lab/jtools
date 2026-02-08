@@ -38,12 +38,21 @@ tasks {
 
     register<Copy>("plugin-cs") {
         group = "distribution"
-        dependsOn(":plugin-cs:build")
+        dependsOn(":plugin-cs:build", "plugin-cs-conf")
 
         // 插件
         val pluginProject = project(":plugin-cs")
         from(pluginProject.layout.buildDirectory.file("libs"))
         into(project.layout.buildDirectory.dir("dist/plugins"))
+    }
+
+    register<Copy>("plugin-cs-conf") {
+        group = "distribution"
+
+        // 配置
+        val pluginProject = project(":plugin-cs")
+        from(pluginProject.layout.files("plugin-cs.toml"))
+        into(project.layout.buildDirectory.dir("dist/conf"))
     }
 
     register<Copy>("plugin-timing") {

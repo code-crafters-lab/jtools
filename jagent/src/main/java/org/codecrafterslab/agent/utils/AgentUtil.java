@@ -2,24 +2,14 @@ package org.codecrafterslab.agent.utils;
 
 import com.sun.tools.attach.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
-import org.codecrafterslab.agent.Agent;
-import org.codecrafterslab.agent.api.AppContext;
-import org.codecrafterslab.agent.core.DefaultAppContext;
-import org.codecrafterslab.agent.core.Environment;
-import org.codecrafterslab.agent.core.plugin.PluginManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
 import java.lang.management.ManagementFactory;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.*;
-import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * @author Wu Yujie
@@ -45,27 +35,6 @@ public class AgentUtil {
         }
         return processId;
     }
-
-    /**
-     * 设置系统环境变量
-     *
-     * <p>ccl.agent.path</p>
-     * <p>ccl.agent.file</p>
-     * <p>
-     * 用于在 Attach API 的时候提供 JAR 包所在路径
-     */
-    public static void setAgentJarInfo() {
-        try {
-            String path = AgentUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-            File file = new File(path);
-            System.setProperty(AGENT_FILE, file.getAbsolutePath());
-            System.setProperty(AGENT_PATH, file.getParent());
-        } catch (Exception e) {
-            log.error("Get Agent Jar Path Error: {}", e.getMessage());
-        }
-
-    }
-
 
     private static void attach() {
         try {
@@ -94,7 +63,6 @@ public class AgentUtil {
         }
     }
 
-
     /**
      * 获取 JAR JAR 包所在路径
      */
@@ -107,63 +75,6 @@ public class AgentUtil {
             log.error("Get Agent Jar Path Error: {}", e.getMessage());
         }
         return Optional.empty();
-    }
-
-    public static void init(Environment environment) {
-        Agent agent = new Agent(environment);
-        AppContext appContext = new DefaultAppContext(environment.getAgentFile());
-        PluginManager.loadPlugins(agent, appContext);
-//        new PluginManager(agent, environment).loadPlugins();
-
-        Instrumentation inst = environment.getInstrumentation();
-
-        /* 1. 注册类文件转换器 */
-        boolean retransformClassesSupported = inst.isRetransformClassesSupported();
-        inst.addTransformer(agent, retransformClassesSupported);
-
-        if (environment.isAttachMode()) {
-            /* 2. 获取需要重新转换的类 */
-            Set<Class<?>> classSet = new HashSet<>();
-            if (retransformClassesSupported) {
-                Set<String> classNames = agent.getClassNames();
-                Set<Pattern> includeClassNamePatterns = agent.getIncludeClassNamePattern();
-                Set<Pattern> excludeClassNamePatterns = agent.getExcludeClassNamePattern();
-
-                classSet = Arrays.stream((Class<?>[]) inst.getAllLoadedClasses())
-                        .filter(clazz -> clazz.getCanonicalName() != null && !clazz.getCanonicalName().isEmpty())
-                        .filter(clazz -> excludeClassNamePatterns.stream().noneMatch(
-                                pattern -> pattern.matcher(clazz.getCanonicalName().replace(".", "/")).matches()
-                        ))
-                        .filter(clazz -> {
-                            boolean b1 = includeClassNamePatterns.stream()
-                                    .anyMatch(pattern -> pattern.matcher(clazz.getCanonicalName().replace(".", "/")).matches());
-                            boolean b2 = classNames.stream().anyMatch(name -> name.equals(clazz.getCanonicalName()));
-                            return b1 || b2;
-                        })
-                        .collect(Collectors.toSet());
-            }
-
-            /* 3. 重新转换类 */
-            if (retransformClassesSupported && !classSet.isEmpty()) {
-                Class<?>[] classes = classSet.toArray(new Class<?>[0]);
-                if (log.isInfoEnabled()) {
-                    List<String> names = classSet.stream().map(Class::getCanonicalName).collect(Collectors.toList());
-                    log.info("agent loaded and will transformer class : {}", names);
-                }
-                try {
-                    /* 其中任何一个类不能转换将会抛出 UnmodifiableClassException 异常 */
-                    inst.retransformClasses(classes);
-                } catch (UnmodifiableClassException e) {
-                    log.error(e.getMessage());
-                }
-            }
-        }
-
-        /* 4. 设置代理所需的本机方法前缀 */
-        if (inst.isNativeMethodPrefixSupported()) {
-            inst.setNativeMethodPrefix(agent, environment.getNativePrefix());
-        }
-
     }
 
     public static Manifest getManifest(Class<?> clazz) {

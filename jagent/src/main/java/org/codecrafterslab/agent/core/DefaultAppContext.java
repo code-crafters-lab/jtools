@@ -1,11 +1,11 @@
 package org.codecrafterslab.agent.core;
 
 import com.janetfilter.core.utils.StringUtils;
-import com.moandjiezana.toml.Toml;
 import org.codecrafterslab.agent.api.AppContext;
-import org.codecrafterslab.agent.core.plugin.ConfigLoader;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class DefaultAppContext implements AppContext {
     private final String appName;
@@ -35,8 +35,11 @@ public class DefaultAppContext implements AppContext {
             pluginDir = new File(baseDir, String.format("%s/plugins", appName));
             logsDir = new File(baseDir, String.format("%s/logs", appName));
         }
-        this.pluginDir.mkdirs();
-        this.configDir.mkdirs();
+        try {
+            Files.createDirectories(configDir.toPath());
+            Files.createDirectories(pluginDir.toPath());
+        } catch (IOException ignored) {
+        }
     }
 
     @Override
@@ -69,14 +72,14 @@ public class DefaultAppContext implements AppContext {
         return logsDir;
     }
 
-    @Override
-    public Toml loadAppConfig() {
-        return ConfigLoader.loadConfig(pluginDir.getParentFile(), appName);
-    }
-
-    @Override
-    public Toml loadPluginConfig(String pluginName) {
-        return ConfigLoader.loadConfig(pluginDir, pluginName);
-    }
+//    @Override
+//    public Toml loadAppConfig() {
+//        return ConfigLoader.loadConfig(pluginDir.getParentFile(), appName);
+//    }
+//
+//    @Override
+//    public Toml loadPluginConfig(String pluginName) {
+//        return ConfigLoader.loadConfig(pluginDir, pluginName);
+//    }
 
 }

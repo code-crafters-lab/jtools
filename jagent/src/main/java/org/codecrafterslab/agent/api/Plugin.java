@@ -1,11 +1,10 @@
 package org.codecrafterslab.agent.api;
 
-
-import com.moandjiezana.toml.Toml;
-
 import java.util.List;
 
 public interface Plugin {
+
+    Class<? extends PluginConfiguration> getConfigurationClass();
 
     /**
      * 初始化插件
@@ -13,7 +12,7 @@ public interface Plugin {
      * @param appContext   应用上下文
      * @param pluginConfig 插件配置
      */
-    default void init(AppContext appContext, Toml pluginConfig) {
+    default void init(AppContext appContext, PluginConfiguration pluginConfig) {
     }
 
     /**

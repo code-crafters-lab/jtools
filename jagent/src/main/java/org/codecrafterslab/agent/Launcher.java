@@ -1,12 +1,8 @@
 package org.codecrafterslab.agent;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codecrafterslab.agent.core.Environment;
-import org.codecrafterslab.agent.utils.AgentUtil;
 
-import java.io.IOException;
 import java.lang.instrument.Instrumentation;
-import java.util.jar.JarFile;
 
 /**
  * @author Wu Yujie
@@ -15,7 +11,6 @@ import java.util.jar.JarFile;
  */
 @Slf4j
 public class Launcher {
-    private static boolean loaded = false;
 
     /**
      * JVM 首先尝试在代理类上调用以下方法
@@ -31,7 +26,7 @@ public class Launcher {
                 log.debug("agent for premain,agentArgs is [{}].", agentArgs);
             }
         }
-        processAgent(agentArgs, inst, false);
+        Initializer.processAgent(log, agentArgs, inst, false);
     }
 
     /**
@@ -48,29 +43,7 @@ public class Launcher {
                 log.debug("agent for attach API,agentArgs is [{}].", agentArgs);
             }
         }
-        processAgent(agentArgs, inst, true);
-    }
-
-    private static void processAgent(String agentArgs, Instrumentation inst, boolean attach) {
-        if (loaded) return;
-        try {
-            AgentUtil.getAgentJarFile().ifPresent(file -> {
-                loaded = true;
-                JarFile jarFile;
-                try {
-                    jarFile = new JarFile(file);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-//                inst.appendToSystemClassLoaderSearch(jarFile);
-                Environment environment = new Environment(inst, file, agentArgs, attach);
-                AgentUtil.init(environment);
-            });
-        } catch (Exception e) {
-            if (log.isErrorEnabled()) {
-                log.error("Can not locate `JAgent` jar file.", e);
-            }
-        }
+        Initializer.processAgent(log, agentArgs, inst, true);
     }
 
 }

@@ -1,9 +1,9 @@
 package com.janetfilter.core.attach;
 
-import com.janetfilter.core.Launcher;
 import com.janetfilter.core.utils.ProcessUtils;
 import com.janetfilter.core.utils.WhereIsUtils;
 import com.sun.tools.attach.VirtualMachine;
+import org.codecrafterslab.agent.Launcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class VMLauncher {
                 "-Djanf.debug=" + System.getProperty("janf.debug", "0"),
                 "-jar",
                 thisJar.getAbsolutePath(),
-                Launcher.ATTACH_ARG,
+                "--attch",
                 id, args
         };
 
@@ -72,7 +72,7 @@ public class VMLauncher {
                 "-Xbootclasspath/a:" + toolsJar.getAbsolutePath(),
                 "-jar",
                 thisJar.getAbsolutePath(),
-                Launcher.ATTACH_ARG,
+                "--attch",
                 id, args
         };
 

@@ -1,8 +1,18 @@
 package org.codecrafterslab.agent.api;
 
 import java.io.File;
+import java.nio.file.Path;
 
-public interface AppContext extends IConfigurable {
+public interface AppContext {
+
+    /**
+     * 获取基础目录
+     *
+     * @return 应用基础目录
+     */
+    default Path getRootDir() {
+        return getBaseDir().toPath();
+    }
 
     /**
      * 获取应用名

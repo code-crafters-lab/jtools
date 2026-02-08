@@ -1,6 +1,5 @@
 package org.codecrafterslab.agent.core;
 
-import com.janetfilter.core.Launcher;
 import com.janetfilter.core.utils.ProcessUtils;
 import com.janetfilter.core.utils.StringUtils;
 import lombok.Getter;
@@ -52,8 +51,8 @@ public final class Environment {
         }
 
         this.pid = ProcessUtils.currentId();
-        this.version = Launcher.VERSION;
-        this.versionNumber = Launcher.VERSION_NUMBER;
+        this.version = "2026.1";
+        this.versionNumber = 20260100;
         this.nativePrefix = StringUtils.randomMethodName(15) + "_";
         this.disabledPluginSuffix = ".disabled.jar";
 

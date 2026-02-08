@@ -1,6 +1,7 @@
 package com.janetfilter.core.utils;
 
-import com.janetfilter.core.Launcher;
+
+import org.codecrafterslab.agent.Launcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class WhereIsUtils {
         }
 
         String resourcePath = "/6c81ec87e55d331c267262e892427a3d93d76683.txt";
-        url = Launcher.class.getResource(resourcePath);
+//        url = Launcher.class.getResource(resourcePath);
         if (null == url) {
             throw new Exception("Can not locate resource file.");
         }

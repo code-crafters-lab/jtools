@@ -19,13 +19,25 @@ public class ConstSubstitutionVisitor<T> extends BaseClassVisitor {
 
     @Override
     protected Optional<IMethodSupport> getMethodSupport() {
-        return Optional.ofNullable(rule).map(ConstSubstitutionRule::getMethodSupport);
+        return Optional.ofNullable(rule).map(ConstSubstitutionRule::getMethodInfo);
     }
 
     @Override
     protected MethodVisitor getModifyMethod(MethodVisitor original, int access, String name, String desc) {
-        Map<T, T> map = Optional.ofNullable(rule).map(ConstSubstitutionRule::getConstantMap)
-                .orElse(Collections.emptyMap());
+        HashMap<T, T> ttHashMap = new HashMap<>();
+        Map<T, T> map = Optional.ofNullable(rule).map(ConstSubstitutionRule::getReplacers)
+                .map(replacers -> replacers.stream()
+                        .reduce(ttHashMap,
+                                (m, r) -> {
+                                    m.put(r.getSrc(), r.getDst());
+                                    return m;
+                                },
+                                (m1, m2) -> {
+                                    m1.putAll(m2);
+                                    return m1;
+                                })
+                )
+                .orElse(ttHashMap);
         return new MethodConstantVisitor(original, map);
     }
 

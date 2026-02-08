@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(project(":jagent"))
+    implementation(project(":jagent"))
 
     testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")

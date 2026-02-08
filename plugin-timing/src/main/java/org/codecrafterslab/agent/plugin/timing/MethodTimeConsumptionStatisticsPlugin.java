@@ -9,6 +9,7 @@ import java.util.List;
 
 @AutoService(Plugin.class)
 public class MethodTimeConsumptionStatisticsPlugin extends BasePlugin {
+
     @Override
     public List<ITransformer> getTransformers() {
         return null;

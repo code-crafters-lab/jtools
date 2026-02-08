@@ -1,7 +1,9 @@
 package org.codecrafterslab.agent.core.plugin;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.api.Plugin;
+import org.codecrafterslab.agent.api.PluginConfiguration;
 import org.codecrafterslab.agent.utils.AgentUtil;
 
 import java.util.Optional;
@@ -10,6 +12,7 @@ import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
 @Getter
+@Slf4j
 public abstract class BasePlugin implements Plugin {
     private static final Attributes.Name PLUGIN_NAME = new Attributes.Name("Plugin-Name");
     private static final Attributes.Name PLUGIN_NAME_DEFAULT = new Attributes.Name("Implementation-Title");
@@ -24,14 +27,25 @@ public abstract class BasePlugin implements Plugin {
     private String author;
     private String version;
     private String description;
+    private final Class<? extends PluginConfiguration> configurationClass;
 
     protected BasePlugin() {
+        this(null);
+    }
+
+    protected BasePlugin(Class<? extends PluginConfiguration> configurationClass) {
+        this.configurationClass = configurationClass;
         Manifest manifest = AgentUtil.getManifest(this.getClass());
         if (manifest == null) {
             throw new RuntimeException("Plugin manifest is missing.");
         }
         this.manifest = manifest;
         this.init(this.manifest);
+    }
+
+    @Override
+    public Class<? extends PluginConfiguration> getConfigurationClass() {
+        return configurationClass;
     }
 
     @Override
