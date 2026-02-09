@@ -16,7 +16,7 @@ public class Agent extends AbstractAgent<ITransformer> {
     private final Environment environment;
 
     public Agent(Environment environment) {
-            super(CLASS_INCLUDE_PATTERN.split(","), CLASS_EXCLUDE_PATTERN.split(","));
+        super(CLASS_INCLUDE_PATTERN.split(","), CLASS_EXCLUDE_PATTERN.split(","));
         this.environment = environment;
     }
 

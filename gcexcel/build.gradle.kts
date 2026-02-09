@@ -54,7 +54,7 @@ tasks {
         jvmArgs = listOf(
             "-Dfile.encoding=UTF-8",
             "-javaagent:${agent}",
-            "-Dclass.out.dir=${project.layout.buildDirectory.file("code").get().asFile.absolutePath}"
+            "-Dclass.out.dir=${project.layout.buildDirectory.file("code").get().asFile.absolutePath}",
         )
     }
 
@@ -68,7 +68,7 @@ tasks {
             "-Dfile.encoding=UTF-8",
             "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005",
             "-javaagent:${agent}",
-            "-Dclass.out.dir=${project.layout.buildDirectory.file("code").get().asFile.absolutePath}"
+            "-Dclass.out.dir=${project.layout.buildDirectory.file("code").get().asFile.absolutePath}",
         )
     }
 }

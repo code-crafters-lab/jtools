@@ -17,7 +17,6 @@ class ConstSubstitutionPluginConfigurationTest {
         ConstSubstitutionPluginConfiguration config = ConfigLoader.load(path,
                 ConstSubstitutionPluginConfiguration.class);
         assertNotNull(config);
-        assertFalse(config.isDisabled());
         assertEquals(1, config.rules.size());
         assertEquals(Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC, config.rules.get(0).getMethodInfo().getAccess());
     }

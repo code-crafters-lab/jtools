@@ -1,17 +1,16 @@
 package org.codecrafterslab.agent.core.plugin;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.codecrafterslab.agent.api.ITransformer;
 import org.codecrafterslab.agent.api.Plugin;
 import org.codecrafterslab.agent.api.PluginConfiguration;
 import org.codecrafterslab.agent.utils.AgentUtil;
 
-import java.util.Optional;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
-@Getter
 @Slf4j
 public abstract class BasePlugin implements Plugin {
     private static final Attributes.Name PLUGIN_NAME = new Attributes.Name("Plugin-Name");
@@ -27,6 +26,7 @@ public abstract class BasePlugin implements Plugin {
     private String author;
     private String version;
     private String description;
+    private final List<ITransformer> transformers = new ArrayList<>();
     private final Class<? extends PluginConfiguration> configurationClass;
 
     protected BasePlugin() {
@@ -66,6 +66,19 @@ public abstract class BasePlugin implements Plugin {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public List<ITransformer> getTransformers() {
+        return transformers;
+    }
+
+    public <T extends ITransformer> void addTransformer(T transformer) {
+        this.transformers.add(transformer);
+    }
+
+    public <T extends ITransformer> void addTransformers(List<T> transformers) {
+        this.transformers.addAll(transformers);
     }
 
     protected void init(Manifest manifest) {

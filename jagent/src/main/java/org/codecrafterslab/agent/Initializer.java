@@ -7,14 +7,14 @@ import org.codecrafterslab.agent.core.plugin.PluginManager;
 import org.codecrafterslab.agent.utils.AgentUtil;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Initializer {
     private static boolean loaded = false;
@@ -24,14 +24,17 @@ public class Initializer {
         try {
             AgentUtil.getAgentJarFile().ifPresent(file -> {
                 loaded = true;
-//                JarFile jarFile;
-//                try {
-//                    jarFile = new JarFile(file);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                jarFile.getVersion()
-//                inst.appendToSystemClassLoaderSearch(jarFile);
+                File[] files = Optional.ofNullable(file.getParentFile()
+                        .listFiles((dir, name) -> name.endsWith("jagent-bootstrap-0.1.0.jar"))).orElse(new File[0]);
+
+                Stream.of(files).map(f -> {
+                    try {
+                        return new JarFile(f);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }).filter(Objects::nonNull).findFirst().ifPresent(inst::appendToBootstrapClassLoaderSearch);
+
                 Environment environment = new Environment(inst, file, agentArgs, attach);
                 Initializer.init(log, environment);
             });

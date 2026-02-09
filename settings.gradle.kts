@@ -30,6 +30,7 @@ include("demo")
 include("gcexcel")
 
 include("jagent")
+include("jagent-bootstrap")
 include("distribution")
 include("plugin-cs")
 include("plugin-timing")

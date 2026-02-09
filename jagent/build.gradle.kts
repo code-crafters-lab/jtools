@@ -23,10 +23,8 @@ dependencies {
     api(libs.asm.commons) {
         exclude(group = "org.ow2.asm", module = "asm-tree")
     }
-    api(libs.toml4j) {
-//        exclude(group = "com.google.code.gson")
-    }
-//    implementation(libs.asm.util)
+    api(libs.asm.util)
+    api(libs.toml4j)
 
     compileOnly(files("${java8}/../lib/tools.jar"))
 

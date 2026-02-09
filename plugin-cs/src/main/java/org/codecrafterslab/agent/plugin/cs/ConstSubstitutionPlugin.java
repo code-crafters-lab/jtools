@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 @AutoService(Plugin.class)
 public class ConstSubstitutionPlugin extends BasePlugin implements Plugin {
-    private final List<ITransformer> transformers = new ArrayList<>();
 
     public ConstSubstitutionPlugin() {
         super(ConstSubstitutionPluginConfiguration.class);
@@ -21,13 +20,8 @@ public class ConstSubstitutionPlugin extends BasePlugin implements Plugin {
             Optional.ofNullable(((ConstSubstitutionPluginConfiguration) pluginConfig).getRules())
                     .map(Collection::stream)
                     .map(rules -> rules.map(ConstSubstitutionTransformer::new).collect(Collectors.toList()))
-                    .ifPresent(transformers::addAll);
+                    .ifPresent(this::addTransformers);
         }
-    }
-
-    @Override
-    public List<ITransformer> getTransformers() {
-        return transformers;
     }
 
 }

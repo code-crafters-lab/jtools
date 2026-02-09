@@ -1,12 +1,14 @@
 package org.codecrafterslab.agent.core.asm.visitor;
 
 import org.codecrafterslab.agent.api.IMethodSupport;
+import org.codecrafterslab.agent.utils.MethodDesc;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Modifier;
 import java.util.Optional;
 
 /**
@@ -26,17 +28,18 @@ public abstract class BaseClassVisitor extends ClassVisitor implements Opcodes {
     }
 
     @Override
-    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+    public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         /* 先得到原始的方法,并可同时修改方法权限修饰符描述等 */
-        MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
+        MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
 
         /* 修改方法, 删除则返回 null */
-        if (this.getMethodSupport().orElse(IMethodSupport.DEFAULT).accept(access, name, desc, signature, exceptions)) {
+        if (this.getMethodSupport().orElse(IMethodSupport.DEFAULT).accept(access, name, descriptor, signature, exceptions)) {
             /* 在原始方法上修改 */
             if (log.isDebugEnabled()) {
-                log.debug("Find method : {} {} {}", access, name, desc);
+                String generate = MethodDesc.generate(access, name, descriptor, signature, exceptions);
+                log.debug("Find method : {}", generate);
             }
-            MethodVisitor methodVisitor = getModifyMethod(mv, access, name, desc);
+            MethodVisitor methodVisitor = getModifyMethod(mv, access, name, descriptor);
             /* 修改不为空，则返回修改 */
             if (methodVisitor != null) {
                 return methodVisitor;

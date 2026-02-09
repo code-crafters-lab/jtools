@@ -4,17 +4,6 @@ import java.util.List;
 
 public interface Plugin {
 
-    Class<? extends PluginConfiguration> getConfigurationClass();
-
-    /**
-     * 初始化插件
-     *
-     * @param appContext   应用上下文
-     * @param pluginConfig 插件配置
-     */
-    default void init(AppContext appContext, PluginConfiguration pluginConfig) {
-    }
-
     /**
      * 获取插件名称
      *
@@ -49,5 +38,21 @@ public interface Plugin {
      * @return 转换器
      */
     List<ITransformer> getTransformers();
+
+    /**
+     * 获取插件配置类
+     *
+     * @return 配置类
+     */
+    Class<? extends PluginConfiguration> getConfigurationClass();
+
+    /**
+     * 初始化插件
+     *
+     * @param appContext   应用上下文
+     * @param pluginConfig 插件配置
+     */
+    default void init(AppContext appContext, PluginConfiguration pluginConfig) {
+    }
 
 }

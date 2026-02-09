@@ -18,14 +18,6 @@ import java.util.*;
 @Slf4j
 public final class PluginManager {
     private static final List<Plugin> plugins = new ArrayList<>();
-//    private final Instrumentation inst;
-//    private final Agent agent;
-//    private final Environment environment;
-//    public PluginManager(Agent agent, Environment environment) {
-//        this.inst = environment.getInstrumentation();
-//        this.agent = agent;
-//        this.environment = environment;
-//    }
 
     public static void loadPlugins(Agent agent, AppContext appContext) {
         Instant startTime = Instant.now();
@@ -37,24 +29,26 @@ public final class PluginManager {
                 return;
             }
 
-            URL[] urls = Arrays.stream(pluginFiles)
-                    .map(file -> {
-                        try {
-                            return file.toURI().toURL();
-                        } catch (Exception e) {
-                            return null;
-                        }
-                    }).filter(Objects::nonNull).toArray(URL[]::new);
+            URL[] urls = Arrays.stream(pluginFiles).map(file -> {
+                try {
+                    return file.toURI().toURL();
+                } catch (Exception e) {
+                    return null;
+                }
+            }).filter(Objects::nonNull).toArray(URL[]::new);
             ClassLoader pluginClassLoader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
             ServiceLoader<Plugin> loader = ServiceLoader.load(Plugin.class, pluginClassLoader);
 
             for (Plugin plugin : loader) {
-                // TODO 可在这里读取插件独立配置
+                // TODO 读取插件独立配置,不应为空，未读取的配置就使用默认配置
                 PluginConfiguration pluginConfig = ConfigLoader.load(
                         appContext.getConfigDir(),
                         String.format("%s.%s", plugin.getName(), "toml"),
                         plugin.getConfigurationClass()
                 );
+                if (pluginConfig != null && pluginConfig.isDisabled()) {
+                    continue;
+                }
                 plugin.init(appContext, pluginConfig);
                 List<ITransformer> transformers = Optional.ofNullable(plugin.getTransformers()).orElse(new ArrayList<>());
                 agent.addTransformers(transformers);
