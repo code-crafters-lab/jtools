@@ -2,7 +2,7 @@
 slf4j-api = "2.0.17"
 asm = "9.9.1"
 junit-bom = "5.10.0"
-lombok = "1.18.42"
+lombok = "1.18.46"
 google-auto-service = "1.1.1"
 toml4j = "0.7.3"
 
