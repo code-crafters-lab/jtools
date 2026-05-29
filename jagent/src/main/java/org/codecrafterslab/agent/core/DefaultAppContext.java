@@ -7,19 +7,63 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+/**
+ * AppContext 的默认实现，负责管理应用各功能目录
+ *
+ * <p>根据 Agent JAR 文件位置自动构建基础目录、
+ * 插件目录、配置目录和日志目录
+ *
+ * @author Wu Yujie
+ * @email coffee377@dingtalk.com
+ */
 public class DefaultAppContext implements AppContext {
+
+    /**
+     * 应用名称
+     */
     private final String appName;
+
+    /**
+     * 应用版本
+     */
     private final String appVersion;
 
+    /**
+     * 应用基础目录（Agent JAR 所在目录）
+     */
     private final File baseDir;
+
+    /**
+     * 插件目录
+     */
     private final File pluginDir;
+
+    /**
+     * 配置目录
+     */
     private final File configDir;
+
+    /**
+     * 日志目录
+     */
     private final File logsDir;
 
+    /**
+     * 创建默认上下文，使用默认目录结构
+     *
+     * @param agentFile Agent JAR 文件
+     */
     public DefaultAppContext(File agentFile) {
         this(agentFile, null, null);
     }
 
+    /**
+     * 创建应用上下文
+     *
+     * @param agentFile   Agent JAR 文件
+     * @param appName     应用名称，为空时使用默认目录
+     * @param appVersion  应用版本
+     */
     public DefaultAppContext(File agentFile, String appName, String appVersion) {
         this.baseDir = agentFile.getParentFile();
         this.appVersion = appVersion;

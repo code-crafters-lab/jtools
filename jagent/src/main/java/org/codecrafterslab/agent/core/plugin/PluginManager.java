@@ -15,10 +15,35 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+/**
+ * 插件管理器，负责扫描、加载和初始化插件
+ *
+ * <p>通过 ServiceLoader 发现插件，自动加载插件配置，
+ * 并将插件的转换器注册到 Agent 中
+ *
+ * @author Wu Yujie
+ * @email coffee377@dingtalk.com
+ */
 @Slf4j
 public final class PluginManager {
+
+    /**
+     * 已加载的插件列表
+     */
     private static final List<Plugin> plugins = new ArrayList<>();
 
+    /**
+     * 从插件目录加载所有插件
+     *
+     * <p>流程：
+     * - 扫描插件目录下所有 JAR 文件
+     * - 创建独立 ClassLoader 加载插件
+     * - 通过 ServiceLoader 发现 Plugin 实现
+     * - 读取插件配置，初始化并注册转换器
+     *
+     * @param agent      Agent 实例
+     * @param appContext 应用上下文
+     */
     public static void loadPlugins(Agent agent, AppContext appContext) {
         Instant startTime = Instant.now();
         try {
@@ -65,6 +90,12 @@ public final class PluginManager {
         }
     }
 
+    /**
+     * 将耗时转换为可读格式
+     *
+     * @param duration 耗时
+     * @return 格式化后的时间字符串，如 1.5s、800ms、1.5min
+     */
     private static String getElapsedTime(Duration duration) {
         long millis = duration.toMillis(); // 获取总毫秒数，作为判断依据
         // 核心逻辑：根据耗时是否超过1秒，选择不同的展示格式

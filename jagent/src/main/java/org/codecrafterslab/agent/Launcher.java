@@ -13,10 +13,13 @@ import java.lang.instrument.Instrumentation;
 public class Launcher {
 
     /**
-     * JVM 首先尝试在代理类上调用以下方法
+     * -javaagent 模式入口方法
      *
-     * @param agentArgs agentArgs
-     * @param inst      inst
+     * <p>JVM 启动时通过 -javaagent 参数自动调用，
+     * 在目标类加载前进行字节码转换
+     *
+     * @param agentArgs Agent 参数
+     * @param inst      Instrumentation 实例
      */
     public static void premain(String agentArgs, Instrumentation inst) {
         if (log.isDebugEnabled()) {
@@ -30,10 +33,13 @@ public class Launcher {
     }
 
     /**
-     * Attach API
+     * attach 模式入口方法
      *
-     * @param agentArgs agentArgs
-     * @param inst      inst
+     * <p>通过 VirtualMachine.attach() 动态附加到已运行 JVM，
+     * 支持热插拔字节码转换
+     *
+     * @param agentArgs Agent 参数
+     * @param inst      Instrumentation 实例
      */
     public static void agentmain(String agentArgs, Instrumentation inst) {
         if (log.isDebugEnabled()) {

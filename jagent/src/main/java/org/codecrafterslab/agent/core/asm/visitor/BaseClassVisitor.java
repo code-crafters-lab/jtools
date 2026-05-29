@@ -12,17 +12,37 @@ import java.lang.reflect.Modifier;
 import java.util.Optional;
 
 /**
+ * ASM 类访问器基类，实现方法级别的字节码转换入口
+ *
+ * <p>通过 getMethodSupport() 定义方法匹配规则，
+ * 匹配成功的方法交由 getModifyMethod() 进行转换
+ *
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
  * @time 2018/01/10 13:07
  */
 public abstract class BaseClassVisitor extends ClassVisitor implements Opcodes {
+
+    /**
+     * 日志实例
+     */
     protected Logger log = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * 创建类访问器
+     *
+     * @param api         ASM API 版本
+     * @param classVisitor 下一个访问器
+     */
     public BaseClassVisitor(int api, ClassVisitor classVisitor) {
         super(api, classVisitor);
     }
 
+    /**
+     * 创建类访问器，默认使用 ASM9
+     *
+     * @param classVisitor 下一个访问器
+     */
     public BaseClassVisitor(ClassVisitor classVisitor) {
         this(ASM9, classVisitor);
     }
@@ -50,16 +70,21 @@ public abstract class BaseClassVisitor extends ClassVisitor implements Opcodes {
         return mv;
     }
 
+    /**
+     * 获取方法匹配规则，用于判断方法是否需要转换
+     *
+     * @return 方法匹配规则
+     */
     protected abstract Optional<IMethodSupport> getMethodSupport();
 
     /**
-     * 修改方法
+     * 修改匹配的方法，返回新的 MethodVisitor 实现自定义转换
      *
-     * @param original MethodVisitor
-     * @param access   修饰符
-     * @param name     名称
-     * @param desc     权限
-     * @return MethodVisitor
+     * @param original 原始 MethodVisitor
+     * @param access   方法访问修饰符
+     * @param name     方法名称
+     * @param desc     方法描述符
+     * @return 自定义的 MethodVisitor，null 表示不做修改
      */
     protected MethodVisitor getModifyMethod(MethodVisitor original, int access, String name, String desc) {
         return null;

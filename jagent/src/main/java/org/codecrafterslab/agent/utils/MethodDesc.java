@@ -4,17 +4,31 @@ import org.objectweb.asm.Type;
 
 import java.lang.reflect.Modifier;
 
+/**
+ * 方法描述生成器，将 ASM 字节码格式的方法信息转换为可读的 Java 方法签名
+ *
+ * <p>支持解析访问修饰符、返回类型、参数列表、异常声明和泛型签名，
+ * 输出格式如：public static void pay(String param0, int param1) throws IOException
+ *
+ * @author Wu Yujie
+ * @email coffee377@dingtalk.com
+ */
 public class MethodDesc {
-   private final static StringBuilder sb = new StringBuilder();
+
     /**
-     * 核心方法：生成方法描述文本
+     * 复用 StringBuilder 实例，避免重复创建对象开销
+     */
+    private final static StringBuilder sb = new StringBuilder();
+
+    /**
+     * 生成方法的完整可读描述文本
      *
-     * @param access     方法访问标志（如 Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC）
-     * @param name       方法名（如 "pay"、"<init>"）
-     * @param descriptor 方法描述符（如 "(Ljava/lang/String;I)V"）
-     * @param signature  泛型签名（可为 null）
-     * @param exceptions 方法抛出的异常类名数组（可为 null）
-     * @return 标准化方法描述文本（如 "public static void pay(String orderId, int amount) throws IOException"）
+     * @param access     方法访问标志
+     * @param name       方法名
+     * @param descriptor 方法描述符
+     * @param signature  泛型签名，可为 null
+     * @param exceptions 抛出的异常类名数组，可为 null
+     * @return 标准化方法描述文本
      */
     public static String generate(int access, String name, String descriptor, String signature, String[] exceptions) {
         sb.setLength(0);
@@ -71,7 +85,10 @@ public class MethodDesc {
     }
 
     /**
-     * 解析特殊方法名：<init> → 构造方法（类名），<clinit> → 静态初始化块
+     * 解析特殊方法名
+     *
+     * @param name ASM 方法名
+     * @return 规范化方法名
      */
     private static String resolveMethodName(String name) {
         if ("<init>".equals(name)) {
@@ -84,10 +101,10 @@ public class MethodDesc {
     }
 
     /**
-     * 将 ASM Type 转换为易读的 Java 类型名
+     * 将 ASM Type 转换为可读的 Java 类型名
      *
-     * @param type ASM Type 对象（如 Type.getType(String.class)）
-     * @return 类型名（如 java.lang.String、int、List）
+     * @param type ASM Type 对象
+     * @return 类型名，如 java.lang.String、int、List
      */
     private static String resolveType(Type type) {
         switch (type.getSort()) {
@@ -120,7 +137,14 @@ public class MethodDesc {
         }
     }
 
-    // 重载方法：无泛型/异常时简化调用
+    /**
+     * 生成方法描述的简化重载，适用于无泛型和异常的场景
+     *
+     * @param access     方法访问标志
+     * @param name       方法名
+     * @param descriptor 方法描述符
+     * @return 方法描述文本
+     */
     public static String generate(int access, String name, String descriptor) {
         return generate(access, name, descriptor, null, null);
     }

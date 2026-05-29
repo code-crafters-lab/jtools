@@ -12,22 +12,33 @@ import java.util.*;
 import java.util.jar.Manifest;
 
 /**
+ * Agent 工具类，提供进程操作、JAR 定位和 Manifest 读取功能
+ *
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
- * @time 2020/04/29 21:54
  */
 @Slf4j
 public class AgentUtil {
 
+    /**
+     * 当前进程 ID，延迟加载
+     */
     private static String processId;
 
+    /**
+     * 系统属性：Agent 路径
+     */
     public static final String AGENT_PATH = "ccl.agent.path";
+
+    /**
+     * 系统属性：Agent 文件路径
+     */
     public static final String AGENT_FILE = "ccl.agent.file";
 
     /**
-     * 获取当前程序进程ID
+     * 获取当前程序进程 ID
      *
-     * @return String
+     * @return 进程 ID
      */
     public synchronized static String getProcessID() {
         if (null == processId) {
@@ -36,6 +47,9 @@ public class AgentUtil {
         return processId;
     }
 
+    /**
+     * 附加 Agent 到当前 JVM
+     */
     private static void attach() {
         try {
             // 1. 获取目标 JVM 的进程 ID (PID)
@@ -64,7 +78,9 @@ public class AgentUtil {
     }
 
     /**
-     * 获取 JAR JAR 包所在路径
+     * 获取 Agent JAR 文件路径
+     *
+     * @return Agent JAR 文件
      */
     public static Optional<File> getAgentJarFile() {
         try {
@@ -77,6 +93,12 @@ public class AgentUtil {
         return Optional.empty();
     }
 
+    /**
+     * 从类的 JAR 包中读取 Manifest 信息
+     *
+     * @param clazz 目标类
+     * @return Manifest 对象，非 JAR 环境或读取失败时返回 null
+     */
     public static Manifest getManifest(Class<?> clazz) {
         String className = clazz.getName().replace('.', '/') + ".class";
         URL classUrl = clazz.getClassLoader().getResource(className);

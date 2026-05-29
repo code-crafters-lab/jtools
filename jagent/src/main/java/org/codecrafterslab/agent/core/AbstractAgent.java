@@ -17,30 +17,67 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Agent 抽象基类，实现类文件转换核心逻辑
+ *
+ * <p>负责管理转换器映射、类名匹配规则和字节码转换流程，
+ * 是 IAgent 接口的标准实现
+ *
+ * @author Wu Yujie
+ * @email coffee377@dingtalk.com
+ * @param <T> 转换器类型
+ */
 @Slf4j
 public abstract class AbstractAgent<T extends ITransformer> implements IAgent<T> {
-    private static final String DEFAULT_CLASS_OUT_DIR = System.getProperty("user.home") + File.separator + "code";
-    private static final String CLASS_OUT_DIR = System.getProperty("class.out.dir", "");
-    private static final String CLASS_SUFFIX = ".class";
+
     /**
-     * 需要被拦截类正则匹配
+     * 默认 class 文件输出目录（用户主目录下的 code 文件夹）
+     */
+    private static final String DEFAULT_CLASS_OUT_DIR = System.getProperty("user.home") + File.separator + "code";
+
+    /**
+     * 自定义 class 文件输出目录（通过系统属性 class.out.dir 配置）
+     */
+    private static final String CLASS_OUT_DIR = System.getProperty("class.out.dir", "");
+
+    /**
+     * class 文件后缀
+     */
+    private static final String CLASS_SUFFIX = ".class";
+
+    /**
+     * 需要被拦截的类名正则匹配模式集合
      */
     private final Set<Pattern> includeClassNamePattern = new HashSet<>();
+
     /**
-     * 需要排除类正则匹配
+     * 需要排除的类名正则匹配模式集合
      */
     private final Set<Pattern> excludeClassNamePattern = new HashSet<>();
+
     /**
-     * 需要被拦截处理的类
+     * 需要被拦截处理的目标类名集合
      */
     private final Set<String> classNames = new TreeSet<>();
 
+    /**
+     * 类名到转换器列表的映射关系
+     */
     private final Map<String, List<ITransformer>> transformerMap = new HashMap<>();
 
+    /**
+     * 使用默认参数创建 Agent
+     */
     public AbstractAgent() {
         this(null, null);
     }
 
+    /**
+     * 创建 Agent，指定类名匹配规则
+     *
+     * @param include 需要拦截的类名正则表达式数组
+     * @param exclude 需要排除的类名正则表达式数组
+     */
     public AbstractAgent(String[] include, String[] exclude) {
         Optional.ofNullable(include).ifPresent(i -> this.includeClassNamePattern.addAll(
                 Arrays.stream(i).filter(s -> s != null && !s.isEmpty())

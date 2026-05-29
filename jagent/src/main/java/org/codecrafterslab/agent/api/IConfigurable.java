@@ -1,5 +1,11 @@
 package org.codecrafterslab.agent.api;
 
+/**
+ * 可配置接口，预留扩展配置加载能力
+ *
+ * @author Wu Yujie
+ * @email coffee377@dingtalk.com
+ */
 public interface IConfigurable {
 
 //    /**

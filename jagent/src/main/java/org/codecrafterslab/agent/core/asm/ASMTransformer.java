@@ -9,6 +9,11 @@ import org.objectweb.asm.Opcodes;
 import java.lang.instrument.IllegalClassFormatException;
 
 /**
+ * ASM 字节码转换器接口，封装 ASM 读写流程
+ *
+ * <p>实现此接口只需关注 ClassVisitor 的自定义逻辑，
+ * 自动处理 ClassReader 和 ClassWriter 的初始化
+ *
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
  * @time 2020/07/07 09:02
@@ -32,10 +37,10 @@ public interface ASMTransformer extends ITransformer, Opcodes {
     }
 
     /**
-     * 获取类访问器
+     * 获取自定义类访问器，实现具体字节码转换逻辑
      *
-     * @param classWriter ClassWriter
-     * @return ClassVisitor
+     * @param classWriter ASM ClassWriter
+     * @return ClassVisitor 实现，null 表示不做任何转换
      */
     ClassVisitor getClassVisitor(ClassWriter classWriter);
 

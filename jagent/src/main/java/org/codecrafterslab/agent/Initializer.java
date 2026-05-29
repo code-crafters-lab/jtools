@@ -16,9 +16,30 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Agent 引导初始化器
+ *
+ * <p>负责定位 Agent JAR 文件、加载 bootstrap 依赖、
+ * 构建 Environment 并初始化插件和转换器
+ *
+ * @author Wu Yujie
+ * @email coffee377@dingtalk.com
+ */
 public class Initializer {
+
+    /**
+     * 是否已加载，防止重复初始化
+     */
     private static boolean loaded = false;
 
+    /**
+     * 处理 Agent 入口逻辑
+     *
+     * @param log       日志
+     * @param agentArgs Agent 参数
+     * @param inst      Instrumentation 实例
+     * @param attach    是否为 attach 模式
+     */
     public static void processAgent(Logger log, String agentArgs, Instrumentation inst, boolean attach) {
         if (loaded) return;
         try {
@@ -45,6 +66,15 @@ public class Initializer {
         }
     }
 
+    /**
+     * 初始化 Agent 核心逻辑
+     *
+     * <p>包括注册转换器、attach 模式下重转换已加载类、
+     * 设置本机方法前缀等
+     *
+     * @param log         日志
+     * @param environment 运行环境
+     */
     private static void init(Logger log, Environment environment) {
         Agent agent = new Agent(environment);
         AppContext appContext = new DefaultAppContext(environment.getAgentFile());
