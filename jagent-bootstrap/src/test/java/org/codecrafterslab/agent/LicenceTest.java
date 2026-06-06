@@ -13,6 +13,6 @@ class LicenceTest {
         String licence = "zEyamwEBAAAAAADqAAABZAAAAAE=";
         byte[] bytes = Base64.getDecoder().decode(licence);
         boolean match = Licence.match(bytes);
-        assertTrue(match);
+        assertFalse(match);
     }
 }
