@@ -7,7 +7,7 @@ import org.codecrafterslab.agent.core.plugin.BasePlugin;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@AutoService(Plugin.class)
+//@AutoService(Plugin.class)
 public class ConstSubstitutionPlugin extends BasePlugin implements Plugin {
 
     public ConstSubstitutionPlugin() {

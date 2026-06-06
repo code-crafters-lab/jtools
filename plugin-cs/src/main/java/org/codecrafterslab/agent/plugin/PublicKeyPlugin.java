@@ -81,7 +81,7 @@ public class PublicKeyPlugin extends BasePlugin {
         list.add(new VarInsnNode(Opcodes.ALOAD, 2)); // 加载 var2
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
                 "org/codecrafterslab/agent/plugin/ArgsFilter",
-                "testFilter",
+                "match",
                 "(Ljava/math/BigInteger;Ljava/math/BigInteger;)[Ljava/math/BigInteger;",
                 false));
         list.add(new VarInsnNode(Opcodes.ASTORE, 4)); // 存到 var4（local4）
