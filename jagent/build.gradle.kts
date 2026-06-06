@@ -24,7 +24,7 @@ dependencies {
         exclude(group = "org.ow2.asm", module = "asm-tree")
     }
     api(libs.asm.util)
-    api(libs.toml4j)
+    implementation(libs.toml4j)
 
     compileOnly(files("${java8}/../lib/tools.jar"))
 
@@ -67,5 +67,14 @@ tasks {
     shadowJar {
         archiveBaseName.set("JAgent")
         archiveClassifier.set("")
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri(project.layout.buildDirectory.dir("repos"))
+        }
     }
 }
