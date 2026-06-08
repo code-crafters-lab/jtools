@@ -218,25 +218,6 @@ public class LicenseMange {
      * @return RSA PublicKey 对象
      */
     public static RSAPublicKey getX509PublicKey(String pemPublicKeyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        // 1. 读取 PEM 文件内容，拼接核心的 Base64 字符串（去除头尾标识和换行符）
-        String pem = Files.readAllLines(Paths.get(pemPublicKeyPath))
-                .stream().filter(line ->
-                        !line.startsWith("-----BEGIN PUBLIC KEY-----")
-                                && !line.startsWith("-----END PUBLIC KEY-----")
-                                && !line.isEmpty())
-                .collect(Collectors.joining());
-
-        // 2. Base64 解码，将字符串转换为二进制 DER 数据
-        byte[] publicKeyDer = Base64.getDecoder().decode(pem);
-
-        // 3. 构造 X.509 编码的公钥规格
-        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(publicKeyDer);
-
-        // 4. 实例化 RSA 密钥工厂，转换为 PublicKey 对象
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey publicKey = keyFactory.generatePublic(x509KeySpec);
-
-        // 可选：转换为 RSAPublicKey，获取公钥的模数、指数等详细信息
-        return (RSAPublicKey) publicKey;
+        return KeyUtils.getX509PublicKey(pemPublicKeyPath);
     }
 }

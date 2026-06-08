@@ -1,13 +1,17 @@
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
 import com.grapecity.documents.excel.internals.aU.b;
 
 import com.grapecity.documents.excel.internals.aV.h;
 import com.grapecity.documents.excel.internals.aU.a;
 import com.grapecity.documents.excel.internals.aZ.m;
 import com.grapecity.documents.excel.internals.bJ.bO;
+import com.grapecity.documents.excel.internals.aV.k;
+import com.grapecity.documents.excel.internals.aU.e;
 
 @Slf4j
 public class Other {
@@ -65,5 +69,59 @@ public class Other {
         log.info("授权状态：{}", li.a());
         log.info("授权状态：{}", li.b());
         log.info("授权状态：{}", li.c());
+    }
+
+    public static void ll() {
+        String licenseV9 = System.getenv("GCEXCEL_JAVA_DEPLOY_LICENSE_V9");
+        log.info("licenseV9: {}", licenseV9);
+        // ----- DEBUG: inspect V9 license state -----
+        String v9Key = System.getenv("GCEXCEL_JAVA_DEPLOY_LICENSE_V9");
+        log.info("V9 env var: {}", v9Key != null ? v9Key.substring(0, Math.min(50, v9Key.length())) : "null");
+
+        // Reflect on aV.k state BEFORE
+        try {
+            Field aField = e.class.getDeclaredField("a");
+            aField.setAccessible(true);
+            k aVk = (k) aField.get(null);
+            log.info("BEFORE - aV.k state: e()={}, f()={}, g()={}, b='{}'",
+                    aVk.e(), aVk.f(), aVk.g(), aVk.c());
+        } catch (Throwable t) {
+            log.warn("BEFORE read failed: {}", t.getMessage());
+        }
+
+        // Trigger V9 key load via aU.e.a() factory reflection
+        try {
+            Class<?> aUeClass = Class.forName("com.grapecity.documents.excel.internals.aU.e");
+            Method setLic = aUeClass.getDeclaredMethod("a", String.class);
+            setLic.setAccessible(true);
+            setLic.invoke(null, v9Key);
+            log.info("aU.e.a() called with V9 key");
+        } catch (Throwable t) {
+            log.warn("aU.e.a() failed: {}", t.getMessage(), t);
+        }
+
+        // Reflect on aV.k state AFTER
+        try {
+            Field aField = e.class.getDeclaredField("a");
+            aField.setAccessible(true);
+            k aVk = (k) aField.get(null);
+            log.info("AFTER - aV.k state: e()={}, f()={}, g()={}, b='{}'",
+                    aVk.e(), aVk.f(), aVk.g(), aVk.c());
+
+            Field dField = aVk.getClass().getDeclaredField("d");
+            dField.setAccessible(true);
+            Object d = dField.get(aVk);
+            log.info("AFTER - aV.k.d = {}", d);
+            if (d != null) {
+                Method cMethod = d.getClass().getMethod("c");
+                Object state = cMethod.invoke(d);
+                log.info("AFTER - aV.k.d.c() = {}", state);
+                // Get signature
+                Method aMethod = d.getClass().getMethod("a");
+                log.info("AFTER - aV.k.d.a() (sig) = {}", aMethod.invoke(d));
+            }
+        } catch (Throwable t) {
+            log.warn("AFTER read failed: {}", t.getMessage(), t);
+        }
     }
 }
