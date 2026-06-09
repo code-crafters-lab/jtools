@@ -113,15 +113,15 @@ public abstract class AbstractAgent<T extends ITransformer> implements IAgent<T>
     public void exportClazzToFile(String outDir, String className, String suffix, byte[] data) {
         if (data == null || data.length == 0) return;
         Path path = Paths.get(outDir, String.format("%s%s", className, suffix));
-        if (log.isDebugEnabled()) {
-            log.debug("class output to: {}", path);
+        if (log.isTraceEnabled()) {
+            log.trace("class output to: {}", path);
         }
         try {
             Files.createDirectories(path.getParent());
             Files.write(path, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
-            if (log.isErrorEnabled()) {
-                log.error("Failed to write class {} file to disk", className, e);
+            if (log.isWarnEnabled()) {
+                log.warn("Failed to write class {} file to disk", className, e);
             }
         }
     }

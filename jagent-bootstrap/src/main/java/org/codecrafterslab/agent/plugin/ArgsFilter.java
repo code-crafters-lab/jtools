@@ -6,6 +6,7 @@ import java.util.*;
 public class ArgsFilter {
     private static final Map<String, BigInteger[]> store = new HashMap<>();
     private static final Set<String> logged = new HashSet<>();
+    private static final boolean debug = System.getProperty("debug","false").equals("true");
 
     public static void addHexRule(String key, String modulus) {
         addRule(key, "10001", modulus, 16);
@@ -26,7 +27,7 @@ public class ArgsFilter {
     public static BigInteger[] match(BigInteger modulus, BigInteger exponent) {
         String key = PairFinger.sha256Hex(modulus, exponent);
         boolean matched = store.containsKey(key);
-        if (matched && logged.add(key)) {
+        if (matched && logged.add(key) && debug) {
             System.out.printf("store[%d] has key: %s%n", store.size(), key);
             System.out.printf("公钥模数 n (B10): %s%n", modulus);
             System.out.printf("公钥指数 e (B10): %s%n", exponent);
