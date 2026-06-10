@@ -1,0 +1,58 @@
+{
+	"succeed": true,
+	"data": [
+		{
+			"id": "650378947648815173",
+			"purchaseRange": "合同内",
+			"freeProduct": false,
+			"supplierId": "1960625288142987264",
+			"supplierName": "安徽省电子认证管理中心有限责任公司",
+			"goodsId": "650378947648815149",
+			"goodsName": "电子签章系统",
+			"goodsType": "软件",
+			"brand": "点聚",
+			"model": "V4.0",
+			"num": 1.00,
+			"unit": "套",
+			"unitPrice": 70000.0000,
+			"unitPriceSale": 0.0000,
+			"taxRate": "13%",
+			"inTaxPrice": 70000.000000,
+			"invoiceType": "增值税专用发票",
+			"warrantyPeriod": 36,
+			"projectWarrantyPeriod": 36,
+			"serviceAfter": [],
+			"doneInStorageNum": 0.000000,
+			"waitInStorageNum": 1.000000,
+			"parameters": "1、支持PDF文件电子签章功能；\n2、支持电子签章验证功能；\n3、支持第三方CA机构签发的数字证书绑定电子印章功能；\n4、支持自动生成电子印章图片，或支持采集的手写签名提供电子签章中间件；\n5、电子签章格式须符合GB/T38540-2020标准；\n6、支持原文、印章图片、数字签名的绑定，能够防止篡改。\n免费质保3年"
+		},
+		{
+			"id": "650378947648815174",
+			"purchaseRange": "合同内",
+			"freeProduct": false,
+			"supplierId": "1960625288142987264",
+			"supplierName": "安徽省电子认证管理中心有限责任公司",
+			"goodsId": "650378947648815134",
+			"goodsName": "UKEY(含数字证书、电子签章)",
+			"goodsType": "硬件设备(非医疗)",
+			"brand": "龙脉",
+			"model": " GM3000",
+			"num": 2000.00,
+			"unit": "套",
+			"unitPrice": 120.0000,
+			"unitPriceSale": 0.0000,
+			"taxRate": "13%",
+			"inTaxPrice": 240000.000000,
+			"invoiceType": "增值税专用发票",
+			"warrantyPeriod": 36,
+			"projectWarrantyPeriod": 36,
+			"serviceAfter": [
+				"送货上门"
+			],
+			"doneInStorageNum": 0.000000,
+			"waitInStorageNum": 2000.000000,
+			"parameters": "1、处理器：32位高性能国密智能卡芯片 \n2、通讯协议：USB Mass Storage/HID/CCID \n3、接口类型：USB2.0，兼容 USB 3.0 \n4、用户存储空间：64K/128K\n5、操作系统支持：Windows XP 及以上，国产信创操作系统\n6、算法支持：RSA1024/2048,SM2，SM1, SM4, SSF33，SHA1,SHA256,SHA512,SM3\n7、标准规范：支持国密标准《GM/T 0016-2012 智能密码钥匙密码应用接口规范》\n8、具备《商用密码产品认证证书》\n免费质保3年"
+		}
+	],
+	"total": 2
+}
