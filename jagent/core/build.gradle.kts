@@ -40,26 +40,50 @@ tasks.test {
     useJUnitPlatform()
 }
 
-val manifestAttr = mapOf(
-    "Implementation-Title" to "Java Agent Proxy",
-    "Implementation-Version" to project.version,
-    "Built-By" to "coffee377",
-    "Built-Date" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss.SSS")),
-    "Built-Jdk" to System.getProperty("java.version"),
-    "Built-Gradle" to gradle.gradleVersion,
-    "Agent-class" to "org.codecrafterslab.agent.Launcher",
-    "Premain-Class" to "org.codecrafterslab.agent.Launcher",
-    "Main-class" to "org.codecrafterslab.agent.Usage",
-    "Can-Redefine-Classes" to true,
-    "Can-Retransform-Classes" to true,
-    "Can-Set-Native-Method-Prefix" to true
-)
-
 tasks {
-    withType<Jar> {
+    withType<Jar>().configureEach {
         archiveBaseName.set("JAgent")
+    }
+
+    named<Jar>("jar") {
         manifest {
-            attributes(manifestAttr)
+            attributes(
+                "Implementation-Title" to "Java Agent Proxy",
+                "Implementation-Version" to project.version,
+                "Built-By" to "coffee377",
+                "Built-Date" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss.SSS")),
+                "Built-Jdk" to System.getProperty("java.version"),
+                "Built-Gradle" to gradle.gradleVersion,
+                "Premain-Class" to "org.codecrafterslab.agent.Launcher",
+                "Agent-Class" to "org.codecrafterslab.agent.Launcher",
+                "Main-Class" to "org.codecrafterslab.agent.Usage",
+                "Class-Path" to listOf(
+                    "libs/slf4j-api-${libs.versions.slf4j.api.get()}.jar",
+                    "libs/asm-${libs.versions.asm.get()}.jar",
+                    "libs/asm-commons-${libs.versions.asm.get()}.jar",
+                    "libs/asm-util-${libs.versions.asm.get()}.jar",
+                    "libs/toml4j-${libs.versions.toml4j.get()}.jar"
+                ).joinToString(" "),
+                "Can-Redefine-Classes" to true,
+                "Can-Retransform-Classes" to true,
+                "Can-Set-Native-Method-Prefix" to true
+            )
+        }
+    }
+
+    register<Jar>("bootstrapJar") {
+        archiveBaseName.set("JAgent")
+        archiveClassifier.set("bootstrap")
+        from(sourceSets.main.get().output)
+        include("org/codecrafterslab/agent/Licence*")
+        include("org/codecrafterslab/agent/plugin/ArgsFilter*")
+        include("org/codecrafterslab/agent/plugin/PairFinger*")
+        manifest {
+            attributes(
+                "Plugin-Name" to "jagent-core-bootstrap",
+                "Plugin-Bootstrap-Required" to "true",
+                "Plugin-Bootstrap-Priority" to "0"
+            )
         }
     }
 
