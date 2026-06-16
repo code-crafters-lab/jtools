@@ -32,6 +32,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(libs.asm.test)
+    testImplementation("org.mockito:mockito-core:5.21.0")
 
     annotationProcessor(libs.lombok)
 }

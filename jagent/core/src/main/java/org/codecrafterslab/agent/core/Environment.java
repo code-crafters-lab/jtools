@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;
+import java.net.URLClassLoader;
 
 /**
  * Agent 运行时环境，封装了所有运行时需要的基础信息
@@ -87,6 +88,11 @@ public final class Environment {
     private final String disabledPluginSuffix;
 
     /**
+     * 插件 ClassLoader，用于加载插件 JAR 中由 Bootstrap ClassLoader 委托的类
+     */
+    private final URLClassLoader pluginClassLoader;
+
+    /**
      * 创建环境实例
      *
      * @param instrumentation Instrumentation 实例
@@ -106,6 +112,19 @@ public final class Environment {
      * @param attachMode      是否为 attach 模式
      */
     public Environment(Instrumentation instrumentation, File agentFile, String app, boolean attachMode) {
+        this(instrumentation, agentFile, app, attachMode, null);
+    }
+
+    /**
+     * 创建环境实例（含插件 ClassLoader）
+     *
+     * @param instrumentation   Instrumentation 实例
+     * @param agentFile         Agent JAR 文件
+     * @param app               应用名称
+     * @param attachMode        是否为 attach 模式
+     * @param pluginClassLoader 插件 ClassLoader，可为 {@code null}
+     */
+    public Environment(Instrumentation instrumentation, File agentFile, String app, boolean attachMode, URLClassLoader pluginClassLoader) {
         this.instrumentation = instrumentation;
         this.agentFile = agentFile;
         this.attachMode = attachMode;
@@ -128,6 +147,7 @@ public final class Environment {
         this.versionNumber = 20260100;
         this.nativePrefix = StringUtils.randomMethodName(15) + "_";
         this.disabledPluginSuffix = ".disabled.jar";
+        this.pluginClassLoader = pluginClassLoader;
 
     }
 
