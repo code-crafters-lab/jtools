@@ -19,7 +19,7 @@ dependencies {
 tasks {
     register<Copy>("dist") {
         group = "distribution"
-        dependsOn(clean, "entry", "bootstrap", "plugin-ep")
+        dependsOn(clean, "entry", "plugin-ep")
     }
 
     register<Copy>("entry") {
@@ -34,17 +34,6 @@ tasks {
         into(project.layout.buildDirectory.dir("dist"))
         // 过滤Jar文件
         exclude("*-original.jar")
-    }
-
-    register<Copy>("bootstrap") {
-        group = "distribution"
-        dependsOn(clean)
-        dependsOn(":jagent-bootstrap:build")
-        val bootstrapProject = project(":jagent-bootstrap")
-        // 源路径
-        from(bootstrapProject.layout.buildDirectory.file("libs"))
-        // 目标路径
-        into(project.layout.buildDirectory.dir("dist"))
     }
 
     register<Copy>("plugin-ep") {
