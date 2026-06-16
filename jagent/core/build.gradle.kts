@@ -61,7 +61,6 @@ tasks {
         manifest {
             attributes(manifestAttr)
         }
-        archiveClassifier.set("original")
     }
 
     shadowJar {
