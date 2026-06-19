@@ -34,7 +34,7 @@ tasks {
     }
 }
 
-val agent: String = "/Users/wuyujie/Project/opensource/jtools/jagent/distribution/build/dist/JAgent-1.0.0.jar"
+val agent: String = "/Users/wuyujie/Project/opensource/jtools/jagent/distribution/build/dist/jagent.jar"
 //    project("jagent:distribution").layout.buildDirectory.file("dist/JAgent-1.0.0.jar").get().asFile.absolutePath
 
 
