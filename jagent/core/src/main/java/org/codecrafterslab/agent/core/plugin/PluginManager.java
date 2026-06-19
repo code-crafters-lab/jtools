@@ -2,6 +2,7 @@ package org.codecrafterslab.agent.core.plugin;
 
 import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.Agent;
+import org.codecrafterslab.agent.Initializer;
 import org.codecrafterslab.agent.api.AppContext;
 import org.codecrafterslab.agent.api.ITransformer;
 import org.codecrafterslab.agent.api.Plugin;
@@ -49,21 +50,10 @@ public final class PluginManager {
         try {
             File pluginDir = appContext.getPluginDir();
             if (!pluginDir.exists() || !pluginDir.isDirectory()) return;
-            File[] pluginFiles = pluginDir.listFiles((dir, name) -> name.endsWith(".jar"));
-            if (null == pluginFiles) {
-                return;
-            }
+            URL[] urls = Initializer.scanJarUrls(pluginDir);
 
-            URL[] urls = Arrays.stream(pluginFiles).map(file -> {
-                try {
-                    return file.toURI().toURL();
-                } catch (Exception e) {
-                    return null;
-                }
-            }).filter(Objects::nonNull).toArray(URL[]::new);
-
-            ClassLoader parent = appContext.getPluginClassLoader() != null
-                ? appContext.getPluginClassLoader()
+            ClassLoader parent = appContext.getAgentClassLoader() != null
+                ? appContext.getAgentClassLoader()
                 : Thread.currentThread().getContextClassLoader();
             ClassLoader pluginClassLoader = new URLClassLoader(urls, parent);
             ServiceLoader<Plugin> loader = ServiceLoader.load(Plugin.class, pluginClassLoader);

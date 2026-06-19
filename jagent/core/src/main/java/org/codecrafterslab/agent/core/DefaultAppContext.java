@@ -49,50 +49,32 @@ public class DefaultAppContext implements AppContext {
     private final File logsDir;
 
     /**
-     * 插件 ClassLoader，用于加载插件 JAR 中由 Bootstrap ClassLoader 委托的类
+     * Agent ClassLoader，用于加载 libs 目录中的 JAR 及由 Bootstrap ClassLoader 委托的类
      */
-    private final ClassLoader pluginClassLoader;
+    private final ClassLoader agentClassLoader;
+
 
     /**
-     * 创建默认上下文，使用默认目录结构
+     * 基于运行环境创建应用上下文
      *
-     * @param agentFile Agent JAR 文件
-     */
-    public DefaultAppContext(File agentFile) {
-        this(agentFile, null, null);
-    }
-
-    /**
-     * 创建应用上下文
+     * <p>根据 Environment 中的配置自动确定基础目录、插件目录、配置目录和日志目录。
+     * 当未指定应用名称时，使用 {@code conf/plugins/logs} 作为默认目录名；
+     * 指定应用名称时，目录结构为 {@code <appName>/conf} 等
      *
-     * @param agentFile   Agent JAR 文件
-     * @param appName     应用名称，为空时使用默认目录
-     * @param appVersion  应用版本
+     * @param environment 运行环境
      */
-    public DefaultAppContext(File agentFile, String appName, String appVersion) {
-        this(agentFile, appName, appVersion, null);
-    }
+    public DefaultAppContext (Environment environment) {
+        this.baseDir = environment.getAgentFile().getParentFile();
+        this.appVersion = environment.getVersion();
+        this.agentClassLoader = environment.getAgentClassLoader();
 
-    /**
-     * 创建应用上下文（含插件 ClassLoader）
-     *
-     * @param agentFile         Agent JAR 文件
-     * @param appName           应用名称，为空时使用默认目录
-     * @param appVersion        应用版本
-     * @param pluginClassLoader 插件 ClassLoader，可为 {@code null}
-     */
-    public DefaultAppContext(File agentFile, String appName, String appVersion, ClassLoader pluginClassLoader) {
-        this.baseDir = agentFile.getParentFile();
-        this.appVersion = appVersion;
-        this.pluginClassLoader = pluginClassLoader;
-
-        if (StringUtils.isEmpty(appName)) {
+        if (StringUtils.isEmpty(environment.getAppName())) {
             this.appName = "";
             this.configDir = new File(baseDir, "conf");
             this.pluginDir = new File(baseDir, "plugins");
             this.logsDir = new File(baseDir, "logs");
         } else {
-            this.appName = appName;
+            this.appName = environment.getAppName();
             configDir = new File(baseDir, String.format("%s/conf", appName));
             pluginDir = new File(baseDir, String.format("%s/plugins", appName));
             logsDir = new File(baseDir, String.format("%s/logs", appName));
@@ -135,8 +117,8 @@ public class DefaultAppContext implements AppContext {
     }
 
     @Override
-    public ClassLoader getPluginClassLoader() {
-        return pluginClassLoader;
+    public ClassLoader getAgentClassLoader() {
+        return agentClassLoader;
     }
 
 }

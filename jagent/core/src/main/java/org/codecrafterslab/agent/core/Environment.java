@@ -3,6 +3,7 @@ package org.codecrafterslab.agent.core;
 import com.janetfilter.core.utils.ProcessUtils;
 import com.janetfilter.core.utils.StringUtils;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.File;
@@ -12,8 +13,9 @@ import java.net.URLClassLoader;
 /**
  * Agent 运行时环境，封装了所有运行时需要的基础信息
  *
- * <p>包括 Instrumentation 实例、目录结构、进程信息等，
- * 是不可变的环境快照
+ * <p>包括 Instrumentation 实例、目录结构、进程信息等。
+ * 除 {@code agentClassLoader} 在构造后由 Initializer 设置外，
+ * 其余字段均为不可变的环境快照
  *
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
@@ -46,6 +48,16 @@ public final class Environment {
      * 配置目录
      */
     private final File configDir;
+
+    /**
+     * Bootstrap 目录，存放需要追加到 Bootstrap ClassLoader 的 JAR
+     */
+    private final File bootstrapDir;
+
+    /**
+     * 核心库目录，存放 Agent 运行时依赖的 JAR
+     */
+    private final File libsDir;
 
     /**
      * 插件目录
@@ -88,9 +100,10 @@ public final class Environment {
     private final String disabledPluginSuffix;
 
     /**
-     * 插件 ClassLoader，用于加载插件 JAR 中由 Bootstrap ClassLoader 委托的类
+     * Agent ClassLoader，用于加载 libs 目录中的 JAR
      */
-    private final URLClassLoader pluginClassLoader;
+    @Setter
+    private URLClassLoader agentClassLoader;
 
     /**
      * 创建环境实例
@@ -116,15 +129,15 @@ public final class Environment {
     }
 
     /**
-     * 创建环境实例（含插件 ClassLoader）
+     * 创建环境实例（含 Agent ClassLoader）
      *
-     * @param instrumentation   Instrumentation 实例
-     * @param agentFile         Agent JAR 文件
-     * @param app               应用名称
-     * @param attachMode        是否为 attach 模式
-     * @param pluginClassLoader 插件 ClassLoader，可为 {@code null}
+     * @param instrumentation  Instrumentation 实例
+     * @param agentFile        Agent JAR 文件
+     * @param app              应用名称
+     * @param attachMode       是否为 attach 模式
+     * @param agentClassLoader Agent ClassLoader，可为 {@code null}
      */
-    public Environment(Instrumentation instrumentation, File agentFile, String app, boolean attachMode, URLClassLoader pluginClassLoader) {
+    public Environment(Instrumentation instrumentation, File agentFile, String app, boolean attachMode, URLClassLoader agentClassLoader) {
         this.instrumentation = instrumentation;
         this.agentFile = agentFile;
         this.attachMode = attachMode;
@@ -132,14 +145,18 @@ public final class Environment {
 
         if (StringUtils.isEmpty(app)) {
             this.appName = "";
+            this.bootstrapDir = new File(baseDir, "bootstrap");
             this.configDir = new File(baseDir, "conf");
+            this.libsDir = new File(baseDir, "libs");
             this.pluginsDir = new File(baseDir, "plugins");
             this.logsDir = new File(baseDir, "logs");
         } else {
-            appName = app;
-            configDir = new File(baseDir, String.format("%s/conf", appName));
-            pluginsDir = new File(baseDir, String.format("%s/plugins", appName));
-            logsDir = new File(baseDir, String.format("%s/logs", appName));
+            this.appName = app;
+            this.bootstrapDir = new File(baseDir, String.format("%s/bootstrap", appName));
+            this.configDir = new File(baseDir, String.format("%s/conf", appName));
+            this.libsDir = new File(baseDir, String.format("%s/libs", appName));
+            this.pluginsDir = new File(baseDir, String.format("%s/plugins", appName));
+            this.logsDir = new File(baseDir, String.format("%s/logs", appName));
         }
 
         this.pid = ProcessUtils.currentId();
@@ -147,7 +164,7 @@ public final class Environment {
         this.versionNumber = 20260100;
         this.nativePrefix = StringUtils.randomMethodName(15) + "_";
         this.disabledPluginSuffix = ".disabled.jar";
-        this.pluginClassLoader = pluginClassLoader;
+        this.agentClassLoader = agentClassLoader;
 
     }
 
@@ -159,5 +176,4 @@ public final class Environment {
     public boolean isJavaagentMode() {
         return !attachMode;
     }
-
 }

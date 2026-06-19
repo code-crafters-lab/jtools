@@ -72,7 +72,7 @@ public interface AppContext {
      *
      * @return 插件 ClassLoader，可为 {@code null}
      */
-    default ClassLoader getPluginClassLoader() {
+    default ClassLoader getAgentClassLoader() {
         return null;
     }
 

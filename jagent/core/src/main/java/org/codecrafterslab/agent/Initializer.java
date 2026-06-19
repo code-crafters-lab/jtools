@@ -37,12 +37,15 @@ public class Initializer {
      * bootstrap JAR 文件匹配模式
      *
      * <p>匹配以 {@code .bootstrap.jar}、{@code -bootstrap.jar} 或 {@code bootstrap.jar}
-     * 结尾的 JAR 文件（不区分大小写），用于识别需要追加到 Bootstrap ClassLoader 的依赖
+     * 结尾的 JAR 文件（不区分大小写），用于扫描时过滤 bootstrap 类 JAR
      */
     private static final Pattern BOOTSTRAP_PATTERN = Pattern.compile(".*([.-]bootstrap\\.jar|bootstrap\\.jar)$", Pattern.CASE_INSENSITIVE);
 
     /**
      * 处理 Agent 入口逻辑
+     *
+     * <p>创建运行环境、构建 libs 目录的 Agent ClassLoader、
+     * 加载 bootstrap 依赖，并初始化插件和转换器
      *
      * @param log       日志
      * @param agentArgs Agent 参数
@@ -53,22 +56,13 @@ public class Initializer {
         if (loaded) return;
         try {
             AgentUtil.getAgentJarFile().ifPresent(file -> {
-                File root = file.getParentFile();
                 loaded = true;
 
-                File[] bootstrapJars = root.listFiles((dir, name) ->
-                        name.endsWith(".jar") && BOOTSTRAP_PATTERN.matcher(name).matches()
-                );
-                File[] bootstraps = Optional.ofNullable(bootstrapJars).orElse(new File[0]);
-                Arrays.stream(bootstraps)
-                        .sorted(Comparator.comparingInt(Initializer::readBootstrapPriority))
-                        .map(Initializer::openJarSafely)
-                        .filter(Objects::nonNull)
-                        .forEach(inst::appendToBootstrapClassLoaderSearch);
+                Environment environment = new Environment(inst, file, agentArgs, attach);
+                loadBootstrapJars(environment.getBootstrapDir(), inst);
+                URLClassLoader agentClassLoader = buildAgentClassLoader(environment.getLibsDir());
+                environment.setAgentClassLoader(agentClassLoader);
 
-                URLClassLoader pluginClassLoader = buildPluginClassLoader(new File(root, "plugins"));
-
-                Environment environment = new Environment(inst, file, agentArgs, attach, pluginClassLoader);
                 Initializer.init(log, environment);
             });
         } catch (Exception e) {
@@ -76,6 +70,47 @@ public class Initializer {
                 log.error("Can not locate `JAgent` jar file.", e);
             }
         }
+    }
+
+    /**
+     * 加载 bootstrap 目录中的 JAR 到 Bootstrap ClassLoader
+     *
+     * <p>扫描 bootstrap 目录下的所有 JAR 文件，按优先级排序后依次追加到
+     * Bootstrap ClassLoader 搜索路径中，使其对所有类可见
+     *
+     * @param bootstrapDir bootstrap 目录
+     * @param inst         Instrumentation 实例
+     */
+    private static void loadBootstrapJars(File bootstrapDir, Instrumentation inst) {
+        if (!bootstrapDir.exists() || !bootstrapDir.isDirectory()) return;
+        File[] jars = bootstrapDir.listFiles((dir, name) -> name.endsWith(".jar"));
+        File[] bootstraps = Optional.ofNullable(jars).orElse(new File[0]);
+        Arrays.stream(bootstraps)
+                .sorted(Comparator.comparingInt(Initializer::readBootstrapPriority))
+                .map(Initializer::openJarSafely)
+                .filter(Objects::nonNull)
+                .forEach(inst::appendToBootstrapClassLoaderSearch);
+    }
+
+    /**
+     * 扫描目录中的 JAR 文件并转换为 URL 数组
+     *
+     * @param dir 待扫描的目录
+     * @return URL 数组
+     */
+    public static URL[] scanJarUrls(File dir) {
+        File[] files = dir.listFiles((d, name) -> name.endsWith(".jar") && !BOOTSTRAP_PATTERN.matcher(name).matches());
+        File[] jars = Optional.ofNullable(files).orElse(new File[0]);
+        return Arrays.stream(jars)
+                .map(f -> {
+                    try {
+                        return f.toURI().toURL();
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toArray(URL[]::new);
     }
 
     /**
@@ -114,30 +149,17 @@ public class Initializer {
     }
 
     /**
-     * 构建插件类加载器
+     * 构建 Agent 类加载器
      *
-     * <p>从插件目录中读取所有非 bootstrap 的 JAR 文件，构建 {@link URLClassLoader}
-     * 用于加载 Agent 插件。类加载器的父加载器为 {@code Initializer} 的加载器
+     * <p>从 libs 目录中加载所有 JAR 文件，构建 {@link URLClassLoader}
+     * 用于加载 Agent 核心库。类加载器的父加载器为 {@code Initializer} 的加载器
      *
-     * @param pluginsDir 插件目录
-     * @return 插件类加载器
+     * @param libsDir 库目录
+     * @return Agent 类加载器
      */
-    private static URLClassLoader buildPluginClassLoader(File pluginsDir) {
-        File[] files = pluginsDir.listFiles((dir, name) ->
-                name.endsWith(".jar") && !BOOTSTRAP_PATTERN.matcher(name).matches()
-        );
-        File[] jars = Optional.ofNullable(files).orElse(new File[0]);
-        URL[] urls = Arrays.stream(jars)
-                .map(f -> {
-                    try {
-                        return f.toURI().toURL();
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .toArray(URL[]::new);
-        return new URLClassLoader(urls, Initializer.class.getClassLoader());
+    private static URLClassLoader buildAgentClassLoader(File libsDir) {
+        URL[] libUrls = scanJarUrls(libsDir);
+        return new URLClassLoader(libUrls, Initializer.class.getClassLoader());
     }
 
     /**
@@ -151,12 +173,7 @@ public class Initializer {
      */
     private static void init(Logger log, Environment environment) {
         Agent agent = new Agent(environment);
-        AppContext appContext = new DefaultAppContext(
-                environment.getAgentFile(),
-                environment.getAppName(),
-                environment.getVersion(),
-                environment.getPluginClassLoader()
-        );
+        AppContext appContext = new DefaultAppContext(environment);
         PluginManager.loadPlugins(agent, appContext);
         Instrumentation inst = environment.getInstrumentation();
 

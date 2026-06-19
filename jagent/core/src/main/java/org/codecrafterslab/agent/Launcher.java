@@ -5,9 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.instrument.Instrumentation;
 
 /**
+ * Agent 启动入口，提供 premain 和 agentmain 两种接入方式
+ *
+ * <p>premain 模式通过 -javaagent 参数在 JVM 启动时加载；
+ * agentmain 模式通过 Attach API 动态附加到目标 JVM
+ *
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
- * @time 2017/09/27 11:13
  */
 @Slf4j
 public class Launcher {
@@ -29,7 +33,8 @@ public class Launcher {
                 log.debug("agent for premain,agentArgs is [{}].", agentArgs);
             }
         }
-        Initializer.processAgent(log, agentArgs, inst, false);
+        String app = parseAppName(agentArgs);
+        Initializer.processAgent(log, app, inst, false);
     }
 
     /**
@@ -49,7 +54,21 @@ public class Launcher {
                 log.debug("agent for attach API,agentArgs is [{}].", agentArgs);
             }
         }
-        Initializer.processAgent(log, agentArgs, inst, true);
+        String app = parseAppName(agentArgs);
+        Initializer.processAgent(log, app, inst, true);
+    }
+
+    /**
+     * 解析应用名称
+     *
+     * <p>从 agentArgs 中提取应用名称，当前直接返回原始参数。
+     * 后续可扩展支持 {@code appName:param} 格式的解析
+     *
+     * @param agentArgs Agent 参数
+     * @return 应用名称
+     */
+    private static String parseAppName(String agentArgs) {
+        return agentArgs;
     }
 
 }
