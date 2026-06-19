@@ -12,12 +12,7 @@ plugins {
 
 include("data-guard")
 include("demo")
+
+includeBuild("jagent")
 //include("other")
 include("gcexcel")
-
-include("jagent")
-include("jagent-bootstrap")
-include("distribution")
-include("plugin-ep")
-include("plugin-cs")
-include("plugin-timing")

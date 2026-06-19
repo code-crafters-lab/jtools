@@ -19,7 +19,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    compileOnly(project(":jagent-bootstrap"))
+//    compileOnly(project(":jagent-bootstrap"))
 
     annotationProcessor("org.projectlombok:lombok:1.18.42")
 }
@@ -34,8 +34,8 @@ tasks {
     }
 }
 
-val agent: String =
-    project(":distribution").layout.buildDirectory.file("dist/JAgent-1.0.0.jar").get().asFile.absolutePath
+val agent: String = "/Users/wuyujie/Project/opensource/jtools/jagent/distribution/build/dist/JAgent-1.0.0.jar"
+//    project("jagent:distribution").layout.buildDirectory.file("dist/JAgent-1.0.0.jar").get().asFile.absolutePath
 
 
 /* java agent */
@@ -51,7 +51,7 @@ tasks {
 
     register<JavaExec>("gcexcel") {
         description = "运行 GCExcel 示例"
-        dependsOn(":distribution:dist")
+//        dependsOn(":distribution:dist")
         group = "demo"
         mainClass.set("GCDemo")
         classpath = sourceSets.main.get().runtimeClasspath
@@ -75,7 +75,6 @@ tasks {
 
     register<JavaExec>("gcexcel-debug") {
         description = "调试运行 GCExcel 示例"
-        dependsOn(":distribution:dist", "license-fake")
         group = "demo"
         mainClass.set("GCDemo")
         classpath = sourceSets.main.get().runtimeClasspath

@@ -61,7 +61,11 @@ public final class PluginManager {
                     return null;
                 }
             }).filter(Objects::nonNull).toArray(URL[]::new);
-            ClassLoader pluginClassLoader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+
+            ClassLoader parent = appContext.getPluginClassLoader() != null
+                ? appContext.getPluginClassLoader()
+                : Thread.currentThread().getContextClassLoader();
+            ClassLoader pluginClassLoader = new URLClassLoader(urls, parent);
             ServiceLoader<Plugin> loader = ServiceLoader.load(Plugin.class, pluginClassLoader);
 
             for (Plugin plugin : loader) {

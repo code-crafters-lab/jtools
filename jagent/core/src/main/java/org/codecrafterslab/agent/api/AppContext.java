@@ -64,5 +64,17 @@ public interface AppContext {
      */
     File getLogsDir();
 
+    /**
+     * 获取插件 ClassLoader
+     *
+     * <p>由 Initializer 在启动阶段构建，包含 plugins/ 下所有非 bootstrap JAR；
+     * 默认返回 null，表示使用线程上下文 ClassLoader
+     *
+     * @return 插件 ClassLoader，可为 {@code null}
+     */
+    default ClassLoader getPluginClassLoader() {
+        return null;
+    }
+
 }
 

@@ -1,4 +1,4 @@
-rootProject.name = "jtools"
+rootProject.name = "jagent"
 
 pluginManagement {
     includeBuild("/Users/wuyujie/Project/opensource/unity/gradle-plugins")
@@ -6,18 +6,18 @@ pluginManagement {
 
 plugins {
     id("ccl.repo")
-//    id("ccl.repo") version "0.10.0-beta.3"
-//    id("io.github.sgtsilvio.gradle.proguard") version "0.8.0" apply false
 }
 
-include("data-guard")
-include("demo")
-//include("other")
-include("gcexcel")
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
+}
 
-include("jagent")
-include("jagent-bootstrap")
+include("core")
 include("distribution")
-include("plugin-ep")
-include("plugin-cs")
-include("plugin-timing")
+include("plugins:plugin-ep")
+//include("plugins:plugin-timing")
+//include("plugins:plugin-cs")

@@ -8,10 +8,11 @@ import org.codecrafterslab.agent.core.plugin.BasePlugin;
 import java.util.List;
 
 @AutoService(Plugin.class)
-public class MethodTimeConsumptionStatisticsPlugin extends BasePlugin {
+public class MethodTrackingPlugin extends BasePlugin {
 
     @Override
     public List<ITransformer> getTransformers() {
         return null;
     }
+
 }

@@ -49,6 +49,11 @@ public class DefaultAppContext implements AppContext {
     private final File logsDir;
 
     /**
+     * 插件 ClassLoader，用于加载插件 JAR 中由 Bootstrap ClassLoader 委托的类
+     */
+    private final ClassLoader pluginClassLoader;
+
+    /**
      * 创建默认上下文，使用默认目录结构
      *
      * @param agentFile Agent JAR 文件
@@ -65,8 +70,21 @@ public class DefaultAppContext implements AppContext {
      * @param appVersion  应用版本
      */
     public DefaultAppContext(File agentFile, String appName, String appVersion) {
+        this(agentFile, appName, appVersion, null);
+    }
+
+    /**
+     * 创建应用上下文（含插件 ClassLoader）
+     *
+     * @param agentFile         Agent JAR 文件
+     * @param appName           应用名称，为空时使用默认目录
+     * @param appVersion        应用版本
+     * @param pluginClassLoader 插件 ClassLoader，可为 {@code null}
+     */
+    public DefaultAppContext(File agentFile, String appName, String appVersion, ClassLoader pluginClassLoader) {
         this.baseDir = agentFile.getParentFile();
         this.appVersion = appVersion;
+        this.pluginClassLoader = pluginClassLoader;
 
         if (StringUtils.isEmpty(appName)) {
             this.appName = "";
@@ -116,14 +134,9 @@ public class DefaultAppContext implements AppContext {
         return logsDir;
     }
 
-//    @Override
-//    public Toml loadAppConfig() {
-//        return ConfigLoader.loadConfig(pluginDir.getParentFile(), appName);
-//    }
-//
-//    @Override
-//    public Toml loadPluginConfig(String pluginName) {
-//        return ConfigLoader.loadConfig(pluginDir, pluginName);
-//    }
+    @Override
+    public ClassLoader getPluginClassLoader() {
+        return pluginClassLoader;
+    }
 
 }

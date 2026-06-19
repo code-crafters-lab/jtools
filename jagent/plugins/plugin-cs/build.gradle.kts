@@ -12,11 +12,9 @@ repositories {
 
 dependencies {
     compileOnly(project(":core"))
-
-    testImplementation(platform(libs.junit.bom))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
+    compileOnly(libs.asm.util)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
     annotationProcessor(libs.lombok)
     annotationProcessor(libs.google.auto.service)
 }

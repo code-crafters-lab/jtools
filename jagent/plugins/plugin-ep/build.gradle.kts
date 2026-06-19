@@ -6,17 +6,10 @@ group = "org.codecrafterslab.agent"
 version = "0.1.0"
 description = ""
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation(project(":jagent"))
-
-    testImplementation(platform(libs.junit.bom))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
+    compileOnly(project(":core"))
+    // testImplementation(libs.junit.jupiter)
+    // testRuntimeOnly(libs.junit.platform.launcher)
     annotationProcessor(libs.lombok)
     annotationProcessor(libs.google.auto.service)
 }
@@ -32,6 +25,8 @@ tasks {
             attributes["Plugin-Author"] = "coffee377"
             attributes["Plugin-Version"] = project.version
             attributes["Plugin-Description"] = project.description
+            attributes["Plugin-Bootstrap-Required"] = "true"
+            attributes["Plugin-Bootstrap-Priority"] = "20"
         }
     }
 }
