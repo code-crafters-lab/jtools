@@ -24,8 +24,4 @@ subprojects {
 
 tasks {
 
-//    subprojects.map { it.tasks.clean }
-    clean {
-//        dependsOn(subprojects.map { it.tasks.clean })
-    }
 }

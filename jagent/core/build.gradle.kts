@@ -47,7 +47,7 @@ tasks.test {
 
 tasks {
     withType<Jar>().configureEach {
-        archiveBaseName.set("JAgent")
+        archiveBaseName.set("jagent")
     }
 
     named<Jar>("jar") {
@@ -68,9 +68,6 @@ tasks {
                 "Can-Set-Native-Method-Prefix" to true
             )
 
-            attributes(
-                "Class-Path" to configurations.runtimeClasspath.get()
-                    .files.joinToString(" ") { "libs/${it.name}" })
         }
     }
 
