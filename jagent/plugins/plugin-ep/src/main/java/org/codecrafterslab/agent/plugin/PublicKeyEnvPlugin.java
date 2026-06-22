@@ -15,7 +15,7 @@ public class PublicKeyEnvPlugin extends BasePlugin {
 
     @Override
     public List<ITransformer> getTransformers() {
-        return Collections.singletonList(new PublicKeyTransformer());
+        return Collections.singletonList(new RSAPublicKeyTransformer());
     }
 
 }

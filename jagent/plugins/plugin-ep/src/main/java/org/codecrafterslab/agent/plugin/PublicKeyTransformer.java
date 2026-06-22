@@ -11,6 +11,7 @@ import java.lang.instrument.IllegalClassFormatException;
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
 
+@Deprecated
 class PublicKeyTransformer implements ITransformer, Opcodes {
     @Override
     public String getName() {
@@ -30,6 +31,7 @@ class PublicKeyTransformer implements ITransformer, Opcodes {
 
         // 3. 创建自定义 ClassVisitor，传入 ClassWriter
         ClassNode classNode = new ClassNode(Opcodes.ASM9);
+
         // 4. 解析类字节码，触发访问器回调（开始处理）
         // SKIP_DEBUG：跳过调试信息，提升效率；SKIP_FRAMES：跳过原始栈帧，由ClassWriter自动计算
         reader.accept(classNode, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
@@ -42,7 +44,7 @@ class PublicKeyTransformer implements ITransformer, Opcodes {
         }
 
         // 2. COMPUTE_FRAMES：自动计算栈帧和局部变量表，简化开发（无需手动处理栈操作）
-        ClassWriter classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        ClassWriter classWriter = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(classWriter);
 
         // 5. 返回修改后的字节码
