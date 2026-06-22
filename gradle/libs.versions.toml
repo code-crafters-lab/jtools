@@ -1,6 +1,6 @@
 [versions]
-slf4j-api = "2.0.17"
-asm = "9.9.1"
+slf4j-api = "2.0.18"
+asm = "9.10.1"
 junit-bom = "5.10.0"
 lombok = "1.18.46"
 google-auto-service = "1.1.1"

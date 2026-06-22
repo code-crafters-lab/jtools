@@ -11,7 +11,7 @@ version = "1.0.0"
 
 var java8: String? = System.getenv("JAVA8_HOME")
 if (java8 == null) {
-    java8 = "/Users/wuyujie/Library/Java/JavaVirtualMachines/corretto-1.8.0_482/Contents/Home/bin"
+    java8 = "/Users/wuyujie/Library/Java/JavaVirtualMachines/corretto-1.8.0_492/Contents/Home"
 }
 
 java {
@@ -27,16 +27,12 @@ dependencies {
     api(libs.asm)
     api(libs.asm.tree)
     api(libs.asm.commons)
-    // implementation(libs.asm.util)
 
     compileOnly(libs.toml4j)
-    compileOnly(files("${java8}/../lib/tools.jar"))
+    compileOnly(files("${java8}/lib/tools.jar"))
 
-    // testImplementation(libs.junit.jupiter)
     testImplementation(libs.asm.test)
     testImplementation("org.mockito:mockito-core:5.21.0")
-
-    // testRuntimeOnly(libs.junit.platform.launcher)
 
     annotationProcessor(libs.lombok)
 }
