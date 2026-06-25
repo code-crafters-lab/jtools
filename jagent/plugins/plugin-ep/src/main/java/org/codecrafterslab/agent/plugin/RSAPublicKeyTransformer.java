@@ -5,7 +5,7 @@ import org.objectweb.asm.*;
 
 class RSAPublicKeyTransformer implements ITransformer, Opcodes {
     @Override
-    public String getName() {
+    public String getClassName() {
         return "java.security.spec.RSAPublicKeySpec";
     }
 

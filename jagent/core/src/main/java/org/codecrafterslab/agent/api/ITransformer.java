@@ -14,11 +14,11 @@ import java.lang.instrument.IllegalClassFormatException;
 public interface ITransformer extends Comparable<ITransformer> {
 
     /**
-     * 获取转换器名称（Java 语言规范定义的格式，如 org.codecrafterslab.agent.core.Transformer）
+     * 获取目标类的全限定名（Java 语言规范定义的格式，如 org.codecrafterslab.agent.core.Transformer）
      *
-     * @return 转换器名称
+     * @return 目标类的全限定名
      */
-    String getName();
+    String getClassName();
 
     /**
      * 获取目标类的内部名称，如 org/codecrafterslab/agent/core/Transformer
@@ -26,8 +26,8 @@ public interface ITransformer extends Comparable<ITransformer> {
      * @return 目标类的内部名称，name 为空时返回 null
      */
     default String getHookClassName() {
-        if (getName() == null || getName().isEmpty()) return null;
-        return getName().replace('.', '/');
+        if (getClassName() == null || getClassName().isEmpty()) return null;
+        return getClassName().replace('.', '/');
     }
 
     /**

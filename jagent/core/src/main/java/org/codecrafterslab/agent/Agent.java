@@ -70,7 +70,7 @@ public class Agent extends AbstractAgent<ITransformer> {
         synchronized (this) {
             Optional.ofNullable(transformer.getHookClassName()).ifPresent(className -> {
                 if (className.isEmpty()) return;
-                getClassNames().add(transformer.getName());
+                getClassNames().add(transformer.getClassName());
                 List<ITransformer> transformers = getTransformerMap().computeIfAbsent(className, k -> new ArrayList<>());
                 transformers.add(transformer);
             });

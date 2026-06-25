@@ -16,7 +16,7 @@ public class ConstSubstitutionTransformer<T> implements ASMTransformer {
     }
 
     @Override
-    public String getName() {
+    public String getClassName() {
         return Optional.ofNullable(rule).map(ConstSubstitutionRule::getClassName).orElse("");
     }
 
