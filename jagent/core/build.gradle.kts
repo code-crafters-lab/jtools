@@ -31,6 +31,10 @@ dependencies {
     compileOnly(libs.toml4j)
     compileOnly(files("${java8}/lib/tools.jar"))
 
+//    implementation(fileTree("../libs") {
+//        include("*.jar")
+//    })
+
     testImplementation(libs.asm.test)
     testImplementation("org.mockito:mockito-core:5.21.0")
 

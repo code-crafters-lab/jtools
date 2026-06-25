@@ -19,5 +19,3 @@ dependencyResolutionManagement {
 include("core")
 include("distribution")
 include("plugins:plugin-ep")
-//include("plugins:plugin-timing")
-//include("plugins:plugin-cs")
