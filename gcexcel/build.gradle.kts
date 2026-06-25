@@ -6,10 +6,6 @@ plugins {
 group = "org.codecrafterslab"
 version = "1.0.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.17")
     implementation("ch.qos.logback:logback-classic:1.3.16")
@@ -18,6 +14,10 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation(fileTree("../jagent/libs") {
+        include("*.jar")
+    })
 
     annotationProcessor("org.projectlombok:lombok:1.18.42")
 }
@@ -45,7 +45,7 @@ application {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+//        languageVersion.set(JavaLanguageVersion.of(8))
     }
 }
 
