@@ -1,6 +1,6 @@
 package org.codecrafterslab.agent.core;
 
-import com.janetfilter.core.utils.StringUtils;
+import org.codecrafterslab.agent.utils.StringUtils;
 import org.codecrafterslab.agent.api.AppContext;
 
 import java.io.File;

@@ -18,7 +18,7 @@ import java.util.jar.Manifest;
  * @email coffee377@dingtalk.com
  */
 @Slf4j
-public class AgentUtil {
+public class AgentUtils {
 
     /**
      * 当前进程 ID，延迟加载
@@ -84,7 +84,7 @@ public class AgentUtil {
      */
     public static Optional<File> getAgentJarFile() {
         try {
-            String path = AgentUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            String path = AgentUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
             File file = new File(path);
             return Optional.of(file);
         } catch (Exception e) {

@@ -1,10 +1,10 @@
 package org.codecrafterslab.agent.core;
 
-import com.janetfilter.core.utils.ProcessUtils;
-import com.janetfilter.core.utils.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.codecrafterslab.agent.utils.AgentUtils;
+import org.codecrafterslab.agent.utils.StringUtils;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;
@@ -159,10 +159,10 @@ public final class Environment {
             this.logsDir = new File(baseDir, String.format("%s/logs", appName));
         }
 
-        this.pid = ProcessUtils.currentId();
+        this.pid = AgentUtils.getProcessID();
         this.version = "2026.1";
         this.versionNumber = 20260100;
-        this.nativePrefix = StringUtils.randomMethodName(15) + "_";
+        this.nativePrefix = "ccl_";
         this.disabledPluginSuffix = ".disabled.jar";
         this.agentClassLoader = agentClassLoader;
 

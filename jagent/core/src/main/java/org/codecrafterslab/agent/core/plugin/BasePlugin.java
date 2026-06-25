@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.api.ITransformer;
 import org.codecrafterslab.agent.api.Plugin;
 import org.codecrafterslab.agent.api.PluginConfiguration;
-import org.codecrafterslab.agent.utils.AgentUtil;
+import org.codecrafterslab.agent.utils.AgentUtils;
 
 import java.util.*;
 import java.util.jar.Attributes;
@@ -107,7 +107,7 @@ public abstract class BasePlugin implements Plugin {
      */
     protected BasePlugin(Class<? extends PluginConfiguration> configurationClass) {
         this.configurationClass = configurationClass;
-        Manifest manifest = AgentUtil.getManifest(this.getClass());
+        Manifest manifest = AgentUtils.getManifest(this.getClass());
         if (manifest == null) {
             throw new RuntimeException("Plugin manifest is missing.");
         }

@@ -4,7 +4,7 @@ import org.codecrafterslab.agent.api.AppContext;
 import org.codecrafterslab.agent.core.DefaultAppContext;
 import org.codecrafterslab.agent.core.Environment;
 import org.codecrafterslab.agent.core.plugin.PluginManager;
-import org.codecrafterslab.agent.utils.AgentUtil;
+import org.codecrafterslab.agent.utils.AgentUtils;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -55,7 +55,7 @@ public class Initializer {
     public static void processAgent(Logger log, String agentArgs, Instrumentation inst, boolean attach) {
         if (loaded) return;
         try {
-            AgentUtil.getAgentJarFile().ifPresent(file -> {
+            AgentUtils.getAgentJarFile().ifPresent(file -> {
                 loaded = true;
 
                 Environment environment = new Environment(inst, file, agentArgs, attach);
@@ -190,6 +190,7 @@ public class Initializer {
                 Set<Pattern> excludeClassNamePatterns = agent.getExcludeClassNamePattern();
 
                 classSet = Arrays.stream((Class<?>[]) inst.getAllLoadedClasses())
+                        .filter(clazz -> !clazz.isArray())
                         .filter(clazz -> clazz.getCanonicalName() != null && !clazz.getCanonicalName().isEmpty())
                         .filter(clazz -> excludeClassNamePatterns.stream().noneMatch(
                                 pattern -> pattern.matcher(clazz.getCanonicalName().replace(".", "/")).matches()
