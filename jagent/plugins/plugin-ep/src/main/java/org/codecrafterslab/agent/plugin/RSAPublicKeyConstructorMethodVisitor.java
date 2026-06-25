@@ -38,34 +38,34 @@ class RSAPublicKeyConstructorMethodVisitor extends MethodVisitor implements Opco
         // 4: var4(ArgsFilter.match返回的数组)
 
         // 1. 压入两个参数 var1、var2 作为 ArgsFilter.match 方法的入参
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitVarInsn(ALOAD, 2);
+        visitVarInsn(ALOAD, 1);
+        visitVarInsn(ALOAD, 2);
 
         // 2. 调用静态方法 ArgsFilter.match
-        mv.visitMethodInsn(INVOKESTATIC, ARGS_FILTER_OWNER, "match", MATCH_METHOD_DESC, false);
+        visitMethodInsn(INVOKESTATIC, ARGS_FILTER_OWNER, "match", MATCH_METHOD_DESC, false);
 
         // 3. 将返回数组存入局部变量 4（var4）
         int var4Index = 4;
-        mv.visitVarInsn(ASTORE, var4Index);
+        visitVarInsn(ASTORE, var4Index);
 
         // 4. 非空判断：var4 == null 则跳转到结束标签
         Label endLabel = new Label();
-        mv.visitVarInsn(ALOAD, var4Index);
-        mv.visitJumpInsn(IFNULL, endLabel);
+        visitVarInsn(ALOAD, var4Index);
+        visitJumpInsn(IFNULL, endLabel);
 
         // 5. var1 = var4[0]
-        mv.visitVarInsn(ALOAD, var4Index); // 加载 var4 数组
-        mv.visitInsn(ICONST_0); // 数组下标 0
-        mv.visitInsn(AALOAD); // 取 var4[0]
-        mv.visitVarInsn(ASTORE, 1); // 替换 var1（local1）
+        visitVarInsn(ALOAD, var4Index); // 加载 var4 数组
+        visitInsn(ICONST_0); // 数组下标 0
+        visitInsn(AALOAD); // 取 var4[0]
+        visitVarInsn(ASTORE, 1); // 替换 var1（local1）
 
         // 6. var2 = var4[1]
-        mv.visitVarInsn(ALOAD, var4Index); // 加载 var4 数组
-        mv.visitInsn(ICONST_1); // 数组下标 1
-        mv.visitInsn(AALOAD); // 取 var4[1]
-        mv.visitVarInsn(ASTORE, 2); // 替换 var2（local2）
+        visitVarInsn(ALOAD, var4Index); // 加载 var4 数组
+        visitInsn(ICONST_1); // 数组下标 1
+        visitInsn(AALOAD); // 取 var4[1]
+        visitVarInsn(ASTORE, 2); // 替换 var2（local2）
 
         // 7. 标记结束标签，后续继续执行原字段赋值逻辑
-        mv.visitLabel(endLabel);
+        visitLabel(endLabel);
     }
 }
