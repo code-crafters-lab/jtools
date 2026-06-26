@@ -1,4 +1,4 @@
-package org.codecrafterslab.agent.core.plugin;
+package org.codecrafterslab.agent.plugin;
 
 import com.moandjiezana.toml.Toml;
 import lombok.Data;

@@ -4,7 +4,6 @@ import com.google.auto.service.AutoService;
 import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.api.ITransformer;
 import org.codecrafterslab.agent.api.Plugin;
-import org.codecrafterslab.agent.core.plugin.BasePlugin;
 
 import java.util.Collections;
 import java.util.List;

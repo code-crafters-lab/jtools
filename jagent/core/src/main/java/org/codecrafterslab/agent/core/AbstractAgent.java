@@ -129,8 +129,8 @@ public abstract class AbstractAgent<T extends ITransformer> implements IAgent<T>
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classBuffer) throws IllegalClassFormatException {
         if (transformerMap.containsKey(className)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Intercepts the entry class ：{}", className);
+            if (log.isTraceEnabled()) {
+                log.trace("Intercepts the entry class ：{}", className);
             }
             // TODO: 转换器不知道是哪个插件的，这里排序还好存在问题，(ITransformer 可获取插件对象，插件也支持排序)
             List<ITransformer> transformers = transformerMap.get(className).stream().sorted().collect(Collectors.toList());

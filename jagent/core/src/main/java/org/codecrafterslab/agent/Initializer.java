@@ -3,7 +3,7 @@ package org.codecrafterslab.agent;
 import org.codecrafterslab.agent.api.AppContext;
 import org.codecrafterslab.agent.core.DefaultAppContext;
 import org.codecrafterslab.agent.core.Environment;
-import org.codecrafterslab.agent.core.plugin.PluginManager;
+import org.codecrafterslab.agent.core.PluginManager;
 import org.codecrafterslab.agent.utils.AgentUtils;
 import org.slf4j.Logger;
 
@@ -190,8 +190,8 @@ public class Initializer {
                 Set<Pattern> excludeClassNamePatterns = agent.getExcludeClassNamePattern();
 
                 classSet = Arrays.stream((Class<?>[]) inst.getAllLoadedClasses())
-                        .filter(clazz -> !clazz.isArray())
-                        .filter(clazz -> clazz.getCanonicalName() != null && !clazz.getCanonicalName().isEmpty())
+                        .filter(clazz -> !clazz.isArray() && !clazz.isPrimitive()
+                                && clazz.getCanonicalName() != null && !clazz.getCanonicalName().isEmpty())
                         .filter(clazz -> excludeClassNamePatterns.stream().noneMatch(
                                 pattern -> pattern.matcher(clazz.getCanonicalName().replace(".", "/")).matches()
                         ))
