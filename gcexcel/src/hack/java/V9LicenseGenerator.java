@@ -33,72 +33,127 @@ public class V9LicenseGenerator {
     }
 
     /**
-     * V9 License 数据模型 (对应 aV.f + Anl 嵌套)
+     * V9 License 数据模型 (对应 aV.f + Anl 嵌套)。
+     * <p>
+     * 序列化为 JSON 后作为 "D" 字段嵌入外层包装 {@code {"S":"<签名>","D":<此 JSON>}}，
+     * 再经 aW.e 4 层混淆编码得到最终 license key。
+     * <p>
+     * JSON 字段映射 (参见 GCEXCEL_LICENSE_ANALYSIS.md §4.8/4.10)：
+     * <pre>
+     * {
+     *   "Id":  "license-uuid",
+     *   "Evl": false,
+     *   "OId": "org-id",
+     *   "CNa": "company-name",
+     *   "CId": "contact-id",
+     *   "Dms": "*.example.com",
+     *   "Ips": "192.168.1.*",
+     *   "Exp": "2026-06-01",
+     *   "Crt": "2026-01-01",
+     *   "Prd": [{"N":"GcExcel","C":"GCEXCEL"}],
+     *   "Anl": {"dsr":true, "ver": "v9"}
+     * }
+     * </pre>
      */
     public static class LicenseData {
-        String id;              // Id
-        boolean evl;            // Evl
-        String oid;             // OId
-        String cna;             // CNa
-        String cid;             // CId
-        String dms;             // Dms
-        String ips;             // Ips
-        Date exp;               // Exp
-        Date crt;               // Crt
-        Product[] products;     // Prd
-        Boolean anlDsr;         // Anl.dsr (null = 跳过整个 Anl)
-        String anlVer;          // Anl.ver
 
+        /** Id — License 唯一标识 (UUID) */
+        String id;
+
+        /** Evl — 试用评估标记，true 表示评估版/试用版 */
+        boolean evl;
+
+        /** OId — 组织/企业 ID (Organization ID) */
+        String oid;
+
+        /** CNa — 公司名称 (Company Name) */
+        String cna;
+
+        /** CId — 联系人 ID (Contact ID) */
+        String cid;
+
+        /** Dms — 域名绑定，分号分隔，用于限制授权绑定的域名 */
+        String dms;
+
+        /** Ips — IP 地址绑定，逗号分隔，用于限制授权绑定的 IP 段 */
+        String ips;
+
+        /** Exp — 过期时间，格式 yyyyMMdd；null 表示永不过期 */
+        Date exp;
+
+        /** Crt — 创建时间，格式 yyyyMMdd hhmmss */
+        Date crt;
+
+        /** Prd — 产品数组，每个元素包含产品名称和产品代码 (对应 aV.i) */
+        Product[] products;
+
+        /** Anl.dsr — 反序列化标记；null 时跳过整个 Anl 块 */
+        Boolean anlDsr;
+
+        /** Anl.ver — 版本号，如 "v9" */
+        String anlVer;
+
+        /** @param id License 唯一标识 (UUID) */
         public LicenseData id(String id) {
             this.id = id;
             return this;
         }
 
+        /** @param evl 试用评估标记 */
         public LicenseData evl(boolean evl) {
             this.evl = evl;
             return this;
         }
 
+        /** @param oid 组织/企业 ID */
         public LicenseData oid(String oid) {
             this.oid = oid;
             return this;
         }
 
+        /** @param cna 公司名称 */
         public LicenseData cna(String cna) {
             this.cna = cna;
             return this;
         }
 
+        /** @param cid 联系人 ID */
         public LicenseData cid(String cid) {
             this.cid = cid;
             return this;
         }
 
+        /** @param dms 域名绑定，分号分隔 */
         public LicenseData dms(String dms) {
             this.dms = dms;
             return this;
         }
 
+        /** @param ips IP 地址绑定，逗号分隔 */
         public LicenseData ips(String ips) {
             this.ips = ips;
             return this;
         }
 
+        /** @param exp 过期时间，null 表示永不过期 */
         public LicenseData exp(Date exp) {
             this.exp = exp;
             return this;
         }
 
+        /** @param crt 创建时间 */
         public LicenseData crt(Date crt) {
             this.crt = crt;
             return this;
         }
 
+        /** @param products 产品列表 */
         public LicenseData products(Product... products) {
             this.products = products;
             return this;
         }
 
+        /** @param dsr 反序列化标记 (null 跳过 Anl)；@param ver 版本号 */
         public LicenseData anl(Boolean dsr, String ver) {
             this.anlDsr = dsr;
             this.anlVer = ver;
@@ -122,7 +177,6 @@ public class V9LicenseGenerator {
 
         // 2. 构建待签名数据: prefix + separator + innerJson
         String signData = String.format("%s%s%s", prefix, separator, innerJson);
-        signData = prefix + separator + innerJson;
 
         // 3. RSA 签名 (SHA256withRSA)
         Signature sig = Signature.getInstance("SHA256WithRSA");

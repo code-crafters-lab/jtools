@@ -6,6 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.PrivateKey;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,23 +25,29 @@ class V9LicenseGeneratorTest {
         // ---- Build license data ----
         // Exp MUST be in the past so that canExpire=true (aV.e.b() returns true)
         // and the V9 license manager keeps the provider (aV.k.d != null).
+        UUID uuid = UUID.randomUUID();
+
+        ZonedDateTime now = Instant.now().atZone(ZoneId.systemDefault());
+        Date crtDate = Date.from(now.toInstant());
+        Date expDate = Date.from(now.plusYears(1).toInstant());
+
         V9LicenseGenerator.LicenseData data = new V9LicenseGenerator.LicenseData()
-                .id(UUID.randomUUID().toString())
+                .id(uuid.toString())
                 .evl(false) // 评估试用版本
-                .oid("ORG-2024")
-                .cna("CodeCraftersLab")
-                .cid("contact@example.com")
+                .oid("jqsoft")
+                .cna("安徽晶奇网络科技股份有限公司")
+//                .cid("contact@example.com")
 //                .dms("localhost")
 //                .ips("127.0.0.1,10.1.40.40")
-//                .exp(new SimpleDateFormat("yyyyMMdd").parse("20260607"))
-                .crt(new Date())
+                .exp(expDate)
+                .crt(crtDate)
                 .products(new V9LicenseGenerator.Product("GCExcel", "93W7"))
-                .anl(false, "v9")
-                ;
+                .anl(false, "v9");
 
         // ---- Generate V9 license key ----
         String sep = "#A1";
-        String licenseKey = V9LicenseGenerator.generate(privateKey, data,"c",sep);
+        String prefix = LicenseIDGenerator.generate(uuid);
+        String licenseKey = V9LicenseGenerator.generate(privateKey, data, prefix, sep);
         Files.writeString(Path.of("/Users/wuyujie/Project/opensource/jtools/gcexcel/src/test/resources/v9.lic"), licenseKey);
         log.info("Generated V9 Key ({} chars):", licenseKey.length());
         log.info(licenseKey);

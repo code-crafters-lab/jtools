@@ -6,6 +6,13 @@ plugins {
 group = "org.codecrafterslab"
 version = "1.0.0-SNAPSHOT"
 
+java {
+    registerFeature("hack"){
+        usingSourceSet(sourceSets.create("hack"))
+        disablePublication()
+    }
+}
+
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.17")
     implementation("ch.qos.logback:logback-classic:1.3.16")
@@ -15,11 +22,26 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    implementation(fileTree("../jagent/libs") {
-        include("*.jar")
+    implementation(fileTree("../jagent/core/build/libs") {
+        include("*bootstrap.jar")
     })
 
+//    compileOnly("org.projectlombok:lombok:1.18.42")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
+
+    testImplementation(sourceSets["hack"].output)
+}
+
+configurations {
+    named("hackImplementation") {
+        extendsFrom(configurations.implementation.get())
+    }
+    named("hackCompileOnly") {
+        extendsFrom(configurations.compileOnly.get())
+    }
+    named("hackAnnotationProcessor") {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
 }
 
 tasks.test {
@@ -27,8 +49,11 @@ tasks.test {
 }
 
 tasks {
-    withType<JavaCompile> {
-//        options.release.set(17)
+    named<JavaCompile>("compileHackJava") {
+        options.release.set(17)
+    }
+    named<JavaCompile>("compileTestJava") {
+        options.release.set(17)
     }
 }
 

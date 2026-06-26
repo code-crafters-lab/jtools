@@ -26,7 +26,7 @@ public class a {
         this.d = var2;
         this.e = var3;
         this.f = var4;
-        this.g = new aV.d<>(this);
+        this.g = new d<>(this);
         this.c.d().addListener(this.g);
     }
 
