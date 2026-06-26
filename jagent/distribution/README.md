@@ -2,7 +2,7 @@
 
 ## 使用方式
 
-* 从 [releases](https://gitee.com/ja-netfilter/ja-netfilter/releases) 页面下载
+* 从 [releases](https://github.com/code-crafters-lab/jagent/releases) 页面下载
 * 添加 `-javaagent:/absolute/path/to/jagent.jar` JVM 参数（**替换为你的实际路径**）
 
   * 作为 `java` 命令的参数添加，如：`java -javaagent:/absolute/path/to/jagent.jar -jar executable.jar`
