@@ -53,7 +53,11 @@ tasks {
     named<Jar>("jar") {
         dependsOn("bootstrapJar")
         manifest {
+            val classpath = configurations.runtimeClasspath.get()
+                .filter { Regex("slf4j-api-.*\\.jar").matches(it.name) }
+                .joinToString(" ") { "libs/${it.name}" }
             attributes(
+                "Class-Path" to classpath,
                 "Implementation-Title" to "Java Agent Proxy",
                 "Implementation-Version" to project.version,
                 "Built-By" to "coffee377",

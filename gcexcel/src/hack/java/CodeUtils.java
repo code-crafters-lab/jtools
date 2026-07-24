@@ -1,5 +1,3 @@
-package net.jqsoft.teamwork.procure.utils;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
