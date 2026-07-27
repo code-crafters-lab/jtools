@@ -1,7 +1,6 @@
 import com.grapecity.documents.excel.internals.bJ.bO;
 import com.grapecity.documents.excel.internals.bJ.bR;
 import lombok.extern.slf4j.Slf4j;
-import org.codecrafterslab.agent.plugin.PairFinger;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,7 +18,7 @@ class LicenseMangeTest {
 
     @Test
     public void getPubKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        RSAPublicKey publicKey = LicenseMange.getX509PublicKey("./src/main/resources/public.pem");
+        RSAPublicKey publicKey = LicenseMange.getX509PublicKey("./src/hack/resources/public.pem");
         log.info("{}", "");
         log.debug("公钥模数 n (B10): {}", publicKey.getModulus());
         log.debug("公钥指数 e (B10): {}", publicKey.getPublicExponent());
@@ -29,7 +28,7 @@ class LicenseMangeTest {
         log.debug("公钥指数 e (B64): {}", Base64.getEncoder().encodeToString(publicKey.getPublicExponent().toByteArray()));
 
         log.info("{}", "");
-        RSAPublicKey testPublicKey = LicenseMange.getX509PublicKey("./src/main/resources/test_public.pem");
+        RSAPublicKey testPublicKey = LicenseMange.getX509PublicKey("./src/hack/resources/test_public.pem");
         log.debug("公钥模数 n (B10): {}", testPublicKey.getModulus());
         log.debug("公钥指数 e (B10): {}", testPublicKey.getPublicExponent());
         log.debug("公钥模数 n (B16): {}", testPublicKey.getModulus().toString(16));
@@ -44,7 +43,7 @@ class LicenseMangeTest {
 
         KeyFactory var7 = KeyFactory.getInstance("RSA");
         RSAPublicKeySpec var8 = new RSAPublicKeySpec(var5, var6);
-        String key = PairFinger.sha256Hex(var5, var6);
+        String key = "PairFinger.sha256Hex(var5, var6)";
         log.info("{}", key);
         RSAPublicKey v9PublicKey = (RSAPublicKey) var7.generatePublic(var8);
         log.debug("公钥模数 n (B10): {}", v9PublicKey.getModulus());
