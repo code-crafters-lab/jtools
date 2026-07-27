@@ -25,6 +25,14 @@ tasks {
         from(layout.buildDirectory.dir("dist"))
     }
 
+    register<Copy>("copy") {
+        dependsOn("archive")
+        description = "拷贝到 tools 目录"
+        group = "distribution"
+        from(layout.buildDirectory.file("jagent-${project.name}-${project.version}.tar.gz"))
+        into("/Users/wuyujie/Project/jqsoft/teamwork/tools")
+    }
+
     register<Copy>("entry") {
         description = "拷贝核心 jar 及运行时依赖到分发目录"
         group = "distribution"
