@@ -1,5 +1,4 @@
 import lombok.extern.slf4j.Slf4j;
-import org.codecrafterslab.agent.plugin.PairFinger;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -21,7 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class LicenseMange {
 
-    private static String BASE = "/Users/wuyujie/.local/share";
+    private static final String BASE = "/Users/wuyujie/.local/share";
 
     public static String GetLicense() {
         try {
@@ -91,7 +90,7 @@ public class LicenseMange {
         BigInteger e = new BigInteger(1, exponentBytes);
         RSAPublicKeySpec var3 = new RSAPublicKeySpec(n, e);
 
-        String key = PairFinger.sha256Hex(n, e);
+        String key = "TODO";
         log.debug("{}", "");
         log.info("key: {}", key);
         log.debug("公钥模数 n (B10): {}", var3.getModulus());

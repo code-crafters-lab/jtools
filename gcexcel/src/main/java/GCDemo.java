@@ -78,6 +78,7 @@ public class GCDemo {
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         // 绑定简单字符串数据源，模板中通过 {{created_at}} 引用
         workbook.addDataSource("created_at", createdAt);
+        workbook.addDataSource("num_prefix","库存");
         // 绑定 JSON 数据源，模板中通过 {{product.xxx}} 引用嵌套字段
         workbook.addDataSource("product", new JsonDataSource(json));
         // 执行模板填充，将数据源替换到模板占位符中
