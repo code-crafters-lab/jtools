@@ -1,6 +1,7 @@
 package org.codecrafterslab.agent;
 
-import lombok.extern.slf4j.Slf4j;
+import org.codecrafterslab.agent.logger.Logger;
+import org.codecrafterslab.agent.logger.impl.LoggerFactory;
 
 import java.lang.instrument.Instrumentation;
 
@@ -13,8 +14,9 @@ import java.lang.instrument.Instrumentation;
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
  */
-@Slf4j
 public class Launcher {
+
+    private final static Logger log = LoggerFactory.getLogger(Launcher.class);
 
     /**
      * -javaagent 模式入口方法
@@ -30,7 +32,7 @@ public class Launcher {
             if (null == agentArgs || agentArgs.isEmpty()) {
                 log.debug("agent for premain");
             } else {
-                log.debug("agent for premain,agentArgs is [{}].", agentArgs);
+                log.debug("agent for premain, agentArgs is [{}].", agentArgs);
             }
         }
         String app = parseAppName(agentArgs);
@@ -51,7 +53,7 @@ public class Launcher {
             if (null == agentArgs || agentArgs.isEmpty()) {
                 log.debug("agent for attach API");
             } else {
-                log.debug("agent for attach API,agentArgs is [{}].", agentArgs);
+                log.debug("agent for attach API, agentArgs is [{}].", agentArgs);
             }
         }
         String app = parseAppName(agentArgs);

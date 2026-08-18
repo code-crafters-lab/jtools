@@ -1,12 +1,13 @@
 package org.codecrafterslab.agent.core;
 
-import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.Agent;
 import org.codecrafterslab.agent.Initializer;
 import org.codecrafterslab.agent.api.AppContext;
 import org.codecrafterslab.agent.api.ITransformer;
 import org.codecrafterslab.agent.api.Plugin;
 import org.codecrafterslab.agent.api.PluginConfiguration;
+import org.codecrafterslab.agent.logger.Logger;
+import org.codecrafterslab.agent.logger.impl.LoggerFactory;
 import org.codecrafterslab.agent.utils.ConfigLoader;
 
 import java.io.File;
@@ -25,8 +26,9 @@ import java.util.*;
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
  */
-@Slf4j
 public final class PluginManager {
+
+    private final static Logger log = LoggerFactory.getLogger(PluginManager.class);
 
     /**
      * 已加载的插件列表

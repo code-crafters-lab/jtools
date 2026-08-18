@@ -28,7 +28,6 @@ import java.util.List;
  * @see RSAPublicKeyTransformer
  * @see ArgsFilter
  */
-@Slf4j
 @AutoService(Plugin.class)
 public class PublicKeyEnvPlugin extends BasePlugin {
 

@@ -1,9 +1,10 @@
 package org.codecrafterslab.agent.plugin;
 
-import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.api.ITransformer;
 import org.codecrafterslab.agent.api.Plugin;
 import org.codecrafterslab.agent.api.PluginConfiguration;
+import org.codecrafterslab.agent.logger.Logger;
+import org.codecrafterslab.agent.logger.impl.LoggerFactory;
 import org.codecrafterslab.agent.utils.AgentUtils;
 
 import java.util.*;
@@ -20,8 +21,9 @@ import java.util.stream.Stream;
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
  */
-@Slf4j
 public abstract class BasePlugin implements Plugin {
+
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 插件名称 Manifest 属性名
@@ -180,10 +182,10 @@ public abstract class BasePlugin implements Plugin {
     /**
      * 从 Manifest 属性中读取值，支持回退查找
      *
-     * @param attributes         Manifest 属性集
-     * @param attributeName      主属性名
+     * @param attributes           Manifest 属性集
+     * @param attributeName        主属性名
      * @param defaultattributeName 回退属性名
-     * @param defaultValue       默认值
+     * @param defaultValue         默认值
      * @return 属性值，优先级：主属性 > 回退属性 > 默认值
      */
     protected String getValue(Attributes attributes,

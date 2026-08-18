@@ -7,7 +7,6 @@ plugins {
 }
 
 group = "org.codecrafterslab.agent"
-version = "1.0.0"
 
 var java8: String? = System.getenv("JAVA8_HOME")
 if (java8 == null) {
@@ -23,7 +22,6 @@ java {
 }
 
 dependencies {
-    api(libs.slf4j.api)
     api(libs.asm)
     api(libs.asm.tree)
     api(libs.asm.commons)

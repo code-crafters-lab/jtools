@@ -1,11 +1,11 @@
 package org.codecrafterslab.agent.core.asm.visitor;
 
 
+import org.codecrafterslab.agent.logger.Logger;
+import org.codecrafterslab.agent.logger.impl.LoggerFactory;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.AdviceAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * ASM 方法访问器基类，基于 AdviceAdapter 简化方法增强开发

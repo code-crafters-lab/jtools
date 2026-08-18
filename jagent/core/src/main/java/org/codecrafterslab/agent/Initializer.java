@@ -4,8 +4,8 @@ import org.codecrafterslab.agent.api.AppContext;
 import org.codecrafterslab.agent.core.DefaultAppContext;
 import org.codecrafterslab.agent.core.Environment;
 import org.codecrafterslab.agent.core.PluginManager;
+import org.codecrafterslab.agent.logger.Logger;
 import org.codecrafterslab.agent.utils.AgentUtils;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;

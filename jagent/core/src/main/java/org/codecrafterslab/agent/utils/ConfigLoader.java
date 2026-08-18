@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.moandjiezana.toml.Toml;
-import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.api.PluginConfiguration;
 
 import java.io.File;
@@ -23,7 +22,6 @@ import java.nio.file.Path;
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
  */
-@Slf4j
 public class ConfigLoader {
 
     /**
@@ -37,7 +35,7 @@ public class ConfigLoader {
         try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(configPath), StandardCharsets.UTF_8)) {
             toml.read(reader);
         } catch (Exception ignored) {
-            log.warn("Failed to load config file: {}", configPath);
+            // log.warn("Failed to load config file: {}", configPath);
         }
         return toml;
     }

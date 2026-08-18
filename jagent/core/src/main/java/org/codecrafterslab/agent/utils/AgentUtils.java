@@ -1,7 +1,8 @@
 package org.codecrafterslab.agent.utils;
 
 import com.sun.tools.attach.VirtualMachine;
-import lombok.extern.slf4j.Slf4j;
+import org.codecrafterslab.agent.logger.Logger;
+import org.codecrafterslab.agent.logger.impl.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +18,9 @@ import java.util.jar.Manifest;
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
  */
-@Slf4j
 public class AgentUtils {
+
+    private final static Logger log = LoggerFactory.getLogger(AgentUtils.class);
 
     /**
      * 当前进程 ID，延迟加载

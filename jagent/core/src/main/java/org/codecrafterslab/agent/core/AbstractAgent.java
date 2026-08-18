@@ -1,8 +1,9 @@
 package org.codecrafterslab.agent.core;
 
-import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.api.IAgent;
 import org.codecrafterslab.agent.api.ITransformer;
+import org.codecrafterslab.agent.logger.Logger;
+import org.codecrafterslab.agent.logger.impl.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +28,9 @@ import java.util.stream.Collectors;
  * @email coffee377@dingtalk.com
  * @param <T> 转换器类型
  */
-@Slf4j
 public abstract class AbstractAgent<T extends ITransformer> implements IAgent<T> {
+
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 默认 class 文件输出目录（用户主目录下的 code 文件夹）

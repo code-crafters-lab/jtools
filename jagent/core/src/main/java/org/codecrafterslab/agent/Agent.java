@@ -1,6 +1,5 @@
 package org.codecrafterslab.agent;
 
-import lombok.extern.slf4j.Slf4j;
 import org.codecrafterslab.agent.core.AbstractAgent;
 import org.codecrafterslab.agent.core.Environment;
 import org.codecrafterslab.agent.api.ITransformer;
@@ -16,7 +15,6 @@ import java.util.*;
  * @author Wu Yujie
  * @email coffee377@dingtalk.com
  */
-@Slf4j
 public class Agent extends AbstractAgent<ITransformer> {
 
     /**

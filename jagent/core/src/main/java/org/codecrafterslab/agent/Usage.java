@@ -1,6 +1,7 @@
 package org.codecrafterslab.agent;
 
-import lombok.extern.slf4j.Slf4j;
+import org.codecrafterslab.agent.logger.Logger;
+import org.codecrafterslab.agent.logger.impl.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,8 +15,9 @@ import java.io.InputStreamReader;
  * @email coffee377@dingtalk.com
  * @time 2017/10/06 07:07
  */
-@Slf4j
 public class Usage {
+
+    private final static Logger log = LoggerFactory.getLogger(Usage.class);
 
     /**
      * 主入口，从 resources/usage.txt 读取并打印使用说明
@@ -26,6 +28,7 @@ public class Usage {
         InputStream io = Usage.class.getResourceAsStream("/usage.txt");
         String line;
 
+        assert io != null;
         BufferedReader br = new BufferedReader(new InputStreamReader(io));
         try {
             while ((line = br.readLine()) != null) {
