@@ -5,9 +5,14 @@ plugins {
 group = "org.codecrafterslab"
 
 tasks {
+    clean {
+        dependsOn(project(":core").tasks.named("clean"))
+    }
+
     register<Copy>("dist") {
         group = "distribution"
         description = "聚合所有子任务，构建完整分发目录"
+
         dependsOn(clean, "entry", "plugins")
     }
 

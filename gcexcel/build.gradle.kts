@@ -110,6 +110,8 @@ tasks {
 
         jvmArgs = listOf(
             "-Dfile.encoding=UTF-8",
+            "-Dccl.agent.log.level=debug",
+            "-Dccl.agent.log.output=file,console",
             "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005",
             "-javaagent:${agent}",
             "-Dclass.out.dir=${project.layout.buildDirectory.file("code").get().asFile.absolutePath}",

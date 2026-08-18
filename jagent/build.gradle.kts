@@ -21,3 +21,16 @@ subprojects {
         }
     }
 }
+
+/* distribution 的 clean 需一并清理各插件项目的 build 目录 */
+gradle.projectsEvaluated {
+    val distribution = project(":distribution")
+    val pluginModules = listOf("ep", "cs", "timing")
+    pluginModules.forEach { name ->
+        findProject(":plugins:plugin-$name")?.let { pluginProject ->
+            distribution.tasks.named("clean") {
+                dependsOn(pluginProject.tasks.named("clean"))
+            }
+        }
+    }
+}
