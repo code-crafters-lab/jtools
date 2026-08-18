@@ -28,6 +28,7 @@ import java.util.*;
  */
 public final class PluginManager {
 
+    /** 日志记录器 */
     private final static Logger log = LoggerFactory.getLogger(PluginManager.class);
 
     /**

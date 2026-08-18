@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
  */
 public class Usage {
 
+    /** 日志记录器 */
     private final static Logger log = LoggerFactory.getLogger(Usage.class);
 
     /**

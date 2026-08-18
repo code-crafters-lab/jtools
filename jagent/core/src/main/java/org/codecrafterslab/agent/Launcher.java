@@ -16,6 +16,7 @@ import java.lang.instrument.Instrumentation;
  */
 public class Launcher {
 
+    /** 日志记录器 */
     private final static Logger log = LoggerFactory.getLogger(Launcher.class);
 
     /**

@@ -1,5 +1,7 @@
 package org.codecrafterslab.agent.api;
 
+import org.codecrafterslab.agent.logger.Logger;
+
 import java.util.List;
 
 /**
@@ -18,6 +20,13 @@ public interface Plugin {
      * @return 插件名称
      */
     String getName();
+
+    /**
+     * 获取插件使用的日志记录器
+     *
+     * @return 日志记录器实例
+     */
+    Logger getLogger();
 
     /**
      * 获取插件作者

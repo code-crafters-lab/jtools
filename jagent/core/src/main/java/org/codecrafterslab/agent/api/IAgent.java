@@ -68,6 +68,19 @@ public interface IAgent<T extends ITransformer> extends ClassFileTransformer {
     }
 
     /**
+     * 判断是否导出被拦截并修改后的 class 文件
+     *
+     * <p>通过系统属性 {@code ccl.agent.class.output} 控制，
+     * 默认不导出。为 true 时，转换后的字节码会被写入磁盘便于调试
+     *
+     * @return 需要导出时返回 true，否则返回 false
+     */
+    default boolean isOutputInterceptedModifiedClasses(){
+        String aFalse = System.getProperty("ccl.agent.class.output", "false");
+        return Boolean.parseBoolean(aFalse);
+    }
+
+    /**
      * 导出 class 文件到磁盘
      *
      * @param outDir    输出目录

@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractAgent<T extends ITransformer> implements IAgent<T> {
 
+    /** 日志记录器，按运行类自动命名 */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -38,9 +39,9 @@ public abstract class AbstractAgent<T extends ITransformer> implements IAgent<T>
     private static final String DEFAULT_CLASS_OUT_DIR = System.getProperty("user.home") + File.separator + "code";
 
     /**
-     * 自定义 class 文件输出目录（通过系统属性 class.out.dir 配置）
+     * 自定义 class 文件输出目录（通过系统属性 ccl.agent.class.out.dir 配置）
      */
-    private static final String CLASS_OUT_DIR = System.getProperty("class.out.dir", "");
+    private static final String CLASS_OUT_DIR = System.getProperty("ccl.agent.class.out.dir", "");
 
     /**
      * class 文件后缀
@@ -134,7 +135,7 @@ public abstract class AbstractAgent<T extends ITransformer> implements IAgent<T>
             if (log.isTraceEnabled()) {
                 log.trace("Intercepts the entry class ：{}", className);
             }
-            // TODO: 转换器不知道是哪个插件的，这里排序还好存在问题，(ITransformer 可获取插件对象，插件也支持排序)
+            // TODO: 转换器不知道是哪个插件的，这里排序还存在问题，(ITransformer 可获取插件对象，插件也支持排序)
             List<ITransformer> transformers = transformerMap.get(className).stream().sorted().collect(Collectors.toList());
 
             for (int i = 0; i < transformers.size(); i++) {
@@ -147,7 +148,9 @@ public abstract class AbstractAgent<T extends ITransformer> implements IAgent<T>
             }
 
             // 输出 修改后的 class 文件
-            this.exportClazzToFile(CLASS_OUT_DIR.isEmpty() ? DEFAULT_CLASS_OUT_DIR : CLASS_OUT_DIR, className, CLASS_SUFFIX, classBuffer);
+            if (this.isOutputInterceptedModifiedClasses()){
+                this.exportClazzToFile(CLASS_OUT_DIR.isEmpty() ? DEFAULT_CLASS_OUT_DIR : CLASS_OUT_DIR, className, CLASS_SUFFIX, classBuffer);
+            }
 
             return classBuffer;
         }

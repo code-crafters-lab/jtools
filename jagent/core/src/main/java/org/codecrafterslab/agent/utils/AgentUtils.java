@@ -20,6 +20,7 @@ import java.util.jar.Manifest;
  */
 public class AgentUtils {
 
+    /** 日志记录器 */
     private final static Logger log = LoggerFactory.getLogger(AgentUtils.class);
 
     /**

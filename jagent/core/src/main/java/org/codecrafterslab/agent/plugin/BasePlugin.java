@@ -23,8 +23,6 @@ import java.util.stream.Stream;
  */
 public abstract class BasePlugin implements Plugin {
 
-    protected final Logger log = LoggerFactory.getLogger(this.getClass());
-
     /**
      * 插件名称 Manifest 属性名
      */
@@ -125,6 +123,11 @@ public abstract class BasePlugin implements Plugin {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return LoggerFactory.getLogger(getName());
     }
 
     @Override

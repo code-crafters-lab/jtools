@@ -18,14 +18,14 @@ import java.util.*;
 public class Agent extends AbstractAgent<ITransformer> {
 
     /**
-     * 需要被拦截的类名正则匹配模式（通过系统属性 class.pattern.include 配置）
+     * 需要被拦截的类名正则匹配模式（通过系统属性 ccl.agent.class.pattern.include 配置）
      */
-    private static final String CLASS_INCLUDE_PATTERN = System.getProperty("class.pattern.include", "");
+    private static final String CLASS_INCLUDE_PATTERN = System.getProperty("ccl.agent.class.pattern.include", "");
 
     /**
-     * 需要排除的类名正则匹配模式（通过系统属性 class.pattern.exclude 配置）
+     * 需要排除的类名正则匹配模式（通过系统属性 ccl.agent.class.pattern.exclude 配置）
      */
-    private static final String CLASS_EXCLUDE_PATTERN = System.getProperty("class.pattern.exclude", "");
+    private static final String CLASS_EXCLUDE_PATTERN = System.getProperty("ccl.agent.class.pattern.exclude", "");
 
     /**
      * 运行时环境信息
