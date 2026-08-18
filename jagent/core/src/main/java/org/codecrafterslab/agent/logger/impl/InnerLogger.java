@@ -35,27 +35,57 @@ import java.util.concurrent.TimeUnit;
  * @time 2020/04/29 13:58
  */
 public class InnerLogger implements Logger {
-    /** 线程池队列容量，防止任务无限堆积导致内存溢出 */
-    private static final int QUEUE_CAPACITY = 1024;
-    /** 控制台输出线程池 */
-    private static final ExecutorService CONSOLE_EXECUTOR = newBoundedSingleThreadExecutor("ccl-agent-console");
-    /** 文件输出线程池 */
-    private static final ExecutorService FILE_EXECUTOR = newBoundedSingleThreadExecutor("ccl-agent-file");
-    /** 全局日志级别 */
-    private static final Level LOG_LEVEL = Level.toLevel(System.getProperty("ccl.agent.log.level", ""), Level.OFF);
-    /** 日志输出目录 */
-    private static final Path LOG_DIR_PATH = Paths.get(System.getProperty("ccl.agent.log.dir", "logs/jagent"));
-    /** 日志输出目标列表 */
-    private static final List<Output> LOG_OUTPUT = Output.from(System.getProperty("ccl.agent.log.output", "file"));
-    /** 日志时间戳格式化器 */
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    /**
+     * 线程池队列容量，防止任务无限堆积导致内存溢出
+     */
+    private static final int QUEUE_CAPACITY;
+    /**
+     * 控制台输出线程池
+     */
+    private static final ExecutorService CONSOLE_EXECUTOR;
+    /**
+     * 文件输出线程池
+     */
+    private static final ExecutorService FILE_EXECUTOR;
+    /**
+     * 全局日志级别
+     */
+    private static final Level LOG_LEVEL;
+    /**
+     * 日志输出目录
+     */
+    private static final Path LOG_DIR_PATH;
+    /**
+     * 日志输出目标列表
+     */
+    private static final List<Output> LOG_OUTPUT;
+    /**
+     * 日志时间戳格式化器
+     */
+    private static final DateTimeFormatter FORMATTER;
 
-    /** 日志级别配置 */
+    /**
+     * 日志级别配置
+     */
     private final Level level;
-    /** 日志记录器名称 */
+    /**
+     * 日志记录器名称
+     */
     private final String name;
-    /** 日志输出目录 */
+    /**
+     * 日志输出目录
+     */
     private final Path logDirPath;
+
+    static {
+        QUEUE_CAPACITY = 1024;
+        CONSOLE_EXECUTOR = newBoundedSingleThreadExecutor("ccl-agent-console");
+        FILE_EXECUTOR = newBoundedSingleThreadExecutor("ccl-agent-file");
+        LOG_LEVEL = Level.toLevel(System.getProperty("ccl.agent.log.level", ""), Level.INFO);
+        LOG_DIR_PATH = Paths.get(System.getProperty("ccl.agent.log.dir", "logs/jagent"));
+        LOG_OUTPUT = Output.from(System.getProperty("ccl.agent.log.output", "file"));
+        FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    }
 
     /**
      * 构造日志记录器
@@ -142,7 +172,7 @@ public class InnerLogger implements Logger {
      */
     private void logger(Level level, String format, Object... args) {
         FormattingTuple formattingTuple = MessageFormatter.arrayFormat(format, args);
-        String out = String.format("%s [%-5s] %s : %s%n", LocalDateTime.now().format(FORMATTER),
+        String out = String.format("%s [%-5s] %s: %s%n", LocalDateTime.now().format(FORMATTER),
                 level.getLevelStr(), name, formattingTuple.getMessage());
 
         if (LOG_OUTPUT.contains(Output.CONSOLE)) {
